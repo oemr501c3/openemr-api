@@ -19,10 +19,7 @@ if ($userId = validateToken($token)) {
     $password = $user_data['password'];
 
     $acl_allow = acl_check('patients', 'demo', $username);
-
     if ($acl_allow) {
-        switch ($emr) {
-            case 'openemr':
                 $strQuery = "SELECT id, pid, fname as firstname, lname as lastname,mname as middlename, phone_contact as phone, dob, sex as gender FROM patient_data";
                 $dbresult = $db->query($strQuery);
 
@@ -65,11 +62,6 @@ if ($userId = validateToken($token)) {
                     $xml_string .= "<status>-1</status>\n";
                     $xml_string .= "<reason>ERROR: Sorry, there was an error processing your data. Please re-submit the information again.</reason>\n";
                 }
-                break;
-            case 'greenway':
-                include 'greenway/patientsearch.php';
-                break;
-        }
     } else {
         $xml_string .= "<status>-2</status>\n";
         $xml_string .= "<reason>You are not Authorized to perform this action</reason>\n";
