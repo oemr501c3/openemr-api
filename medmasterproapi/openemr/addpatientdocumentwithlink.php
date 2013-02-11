@@ -1,5 +1,22 @@
 <?php
-
+/**
+ * Copyright (C) 2012 Karl Englund <karl@mastermobileproducts.com>
+ *
+ * LICENSE: This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 3
+ * of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://opensource.org/licenses/gpl-3.0.html>;.
+ *
+ * @package OpenEMR
+ * @author  Karl Englund <karl@mastermobileproducts.com>
+ * @link    http://www.open-emr.org
+ */
 header("Content-Type:text/xml");
 $ignoreAuth = true;
 require('classes.php');
@@ -7,13 +24,13 @@ $xml_array = array();
 
 $token = $_POST['token'];
 
-$patient_id = $_POST['patientId'];
+$patient_id = add_escape_custom($_POST['patientId']);
 $docdate = $_POST['docDate'];
-$list_id = !empty($_POST['listId']) ? $_POST['listId'] : 0;
-$cat_id = $_POST['categoryId'];
-$link = $_POST['link'];
-$ext = $_POST['docType'];
-$mimetype = $_POST['mimeType'];
+$list_id = !empty($_POST['listId']) ? add_escape_custom($_POST['listId']) : 0;
+$cat_id = add_escape_custom($_POST['categoryId']);
+$link = add_escape_custom($_POST['link']);
+$ext = add_escape_custom($_POST['docType']);
+$mimetype = add_escape_custom($_POST['mimeType']);
 
 $image_content = file_get_contents($link);
 

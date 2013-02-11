@@ -9,7 +9,7 @@ $xml_string = "<list>";
 
 
 $token = $_POST['token'];
-$patientId = $_POST['patientId'];
+$patientId = add_escape_custom($_POST['patientId']);
 
 if ($userId = validateToken($token)) {
     $user = getUsername($userId);

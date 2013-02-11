@@ -5,6 +5,7 @@ $ignoreAuth = true;
 require_once 'classes.php';
 $xml_array = array();
 
+
 $username = $_REQUEST['username'];
 $password = $_REQUEST['password'];
 $emr = isset($_REQUEST['emr']) && !empty($_REQUEST['emr']) ? strtolower($_REQUEST['emr']) : "openemr";
@@ -16,25 +17,26 @@ if ($date == "") {
     $date = date('Y-m-d');
 }
 
-$strQuery = "SELECT * FROM medmasterusers WHERE username='" . $username . "' AND password='" . sha1($password) . "'";
-$result = $db->get_row($strQuery);
+$strQuery = "SELECT * FROM users WHERE username='" . $username . "' AND password='" . sha1($password) . "'";
+$result = sqlQuery($strQuery);
 
 if ($result) {
-    $userId = $result->id;
+    $userId = $result['id'];
     $token = getToken($userId, $emr, $password, $device_token);
 
+    $provider_id = $result['id'];
+    $xml_array['status'] = 0;
+    $xml_array['reason'] = 'User fetched.';
+    $xml_array['token'] = $token;
+    $xml_array['id'] = $result['id'];
+    $xml_array['provider_id'] = $provider_id;
+    $xml_array['firstname'] = $result['fname'];
+    $xml_array['lastname'] = $result['lname'];
+    $xml_array['greeting'] = '';
+    $xml_array['title'] = $result['title'];
 
     if ($getdashboardinfo) {
-        $provider_id = $result->uid;
-        $xml_array['status'] = 0;
-        $xml_array['reason'] = 'User fetched.';
-        $xml_array['token'] = $token;
-        $xml_array['id'] = $result->id;
-        $xml_array['provider_id'] = $provider_id;
-        $xml_array['firstname'] = $result->firstname;
-        $xml_array['lastname'] = $result->lastname;
-        $xml_array['greeting'] = $result->greeting;
-        $xml_array['title'] = $result->title;
+
 
         $appointments = fetchAppointments($date, $date, $patient_id = null, $provider_id, $facility_id = null);
         if ($appointments) {
@@ -48,16 +50,16 @@ if ($result) {
         /**
          * Particular Date prescription 
          */
-        $strQuery = "SELECT * FROM prescriptions WHERE date_added = '{$date}' AND provider_id = {$provider_id}";
-        $result = $db->get_results($strQuery);
+        $strQuery = "SELECT * FROM prescriptions WHERE date_added = ? AND provider_id = ?";
+        $result = sqlStatement($strQuery, array($date, $provider_id));
 
-        if ($result) {
+        if ($result->_numOfRows > 0) {
             $xml_array["Prescriptionlist"]['status'] = 0;
             $xml_array["Prescriptionlist"]['reason'] = 'Prescriptions records fetched.';
 
-            for ($i = 0; $i < count($result); $i++) {
+            while ($res = sqlFetchArray($result)) {
 
-                foreach ($result[$i] as $fieldName => $fieldValue) {
+                foreach ($res as $fieldName => $fieldValue) {
                     $rowValue = xmlsafestring($fieldValue);
                     $xml_array["Prescriptionlist"]['Prescription-' . $i][$fieldName] = $rowValue;
                 }
@@ -72,16 +74,16 @@ if ($result) {
                         INNER JOIN `categories_to_documents` AS ctd ON c.id = ctd.category_id
                         INNER JOIN `documents` AS d ON ctd.document_id = d.id
                         INNER JOIN `patient_data` AS pd ON pd.pid = d.foreign_id
-                        WHERE c.id = 2 AND d.docdate = '{$date}' AND pd.providerID = $provider_id";
+                        WHERE c.id = 2 AND d.docdate = ? AND pd.providerID = ?";
 
-        $labresult = $db->get_results($labQuery);
+        $labresult = sqlStatement($labQuery, array($date, $provider_id));
 
         if ($labresult) {
             $xml_array["Labresultslist"]['status'] = 0;
             $xml_array["Labresultslist"]['reason'] = 'Lab Results fetched';
 
-            for ($i = 0; $i < count($labresult); $i++) {
-                foreach ($labresult[$i] as $fieldName => $fieldValue) {
+            while ($labres = sqlFetchArray($labresult)) {
+                foreach ($labres as $fieldName => $fieldValue) {
                     if ($fieldName == 'url') {
                         if (!empty($fieldValue)) {
                             $fieldValue = getUrl($fieldValue);

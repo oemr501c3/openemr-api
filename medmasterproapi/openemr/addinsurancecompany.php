@@ -1,5 +1,22 @@
 <?php
-
+/**
+ * Copyright (C) 2012 Karl Englund <karl@mastermobileproducts.com>
+ *
+ * LICENSE: This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 3
+ * of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://opensource.org/licenses/gpl-3.0.html>;.
+ *
+ * @package OpenEMR
+ * @author  Karl Englund <karl@mastermobileproducts.com>
+ * @link    http://www.open-emr.org
+ */
 header("Content-Type:text/xml");
 $ignoreAuth = true;
 require 'classes.php';
@@ -8,18 +25,18 @@ require_once("$srcdir/classes/InsuranceCompany.class.php");
 $xml_string = "";
 $xml_string .= "<insurancecompany>";
 
-$token = $_POST['token'];
-$name = $_POST['name'];
-$attn = $_POST['attn'];
-$address_line1 = $_POST['address_line1'];
-$address_line2 = $_POST['address_line1'];
-$phone = $_POST['phone'];
-$city = $_POST['city'];
-$state = $_POST['state'];
-$zip = $_POST['zip'];
-$cms_id = $_POST['cms_id'];
-$freeb_type = $_POST['freeb_type'];
-$x12_receiver_id = $_POST['x12_receiver_id'];
+$token = add_escape_custom($_POST['token']);
+$name = add_escape_custom($_POST['name']);
+$attn =add_escape_custom( $_POST['attn']);
+$address_line1 = add_escape_custom($_POST['address_line1']);
+$address_line2 = add_escape_custom($_POST['address_line1']);
+$phone = add_escape_custom($_POST['phone']);
+$city = add_escape_custom($_POST['city']);
+$state = add_escape_custom($_POST['state']);
+$zip = add_escape_custom($_POST['zip']);
+$cms_id = add_escape_custom($_POST['cms_id']);
+$freeb_type = add_escape_custom($_POST['freeb_type']);
+$x12_receiver_id = add_escape_custom($_POST['x12_receiver_id']);
 
 if ($userId = validateToken($token)) {
 

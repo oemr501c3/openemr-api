@@ -3,7 +3,6 @@
 header("Content-Type:text/xml");
 $ignoreAuth = true;
 require_once('classes.php');
-ini_set('display_errors', '1');
 
 $xml_string = "";
 $xml_string .= "<PatientVisit>";
@@ -24,18 +23,18 @@ if ($userId = validateToken($token)) {
         $strQuery = "SELECT fe.*,opc.pc_catname,fb.name AS billing_facility_name FROM form_encounter as fe
                                 LEFT JOIN `openemr_postcalendar_categories` as opc ON opc.pc_catid = fe.pc_catid
                                 LEFT JOIN `facility` as fb ON fb.id = fe.billing_facility
-                                WHERE pid= {$patientId} ORDER BY id DESC";
+                                WHERE pid= ? ORDER BY id DESC";
 
-        $result = $db->get_results($strQuery);
+        $result = sqlStatement($strQuery,array($patientId));
 
-        if ($result) {
+        if ($result->_numOfRows > 0) {
             $xml_string .= "<status>0</status>";
             $xml_string .= "<reason>The Patient visit Record has been fetched</reason>";
 
-            for ($i = 0; $i < count($result); $i++) {
+            while ($res = sqlFetchArray($result)) {
                 $xml_string .= "<Visit>\n";
-
-                foreach ($result[$i] as $fieldName => $fieldValue) {
+               
+                foreach ($res as $fieldName => $fieldValue) {
                     $rowValue = xmlsafestring($fieldValue);
                     $xml_string .= "<$fieldName>$rowValue</$fieldName>\n";
                 }
@@ -43,15 +42,17 @@ if ($userId = validateToken($token)) {
                 $sql_visits = "SELECT type,title,begdate,diagnosis
                            FROM `issue_encounter` AS ie
                            INNER JOIN `lists` AS l ON ie.list_id = l.id
-                           WHERE ie.encounter =" . $result[$i]->encounter;
+                           WHERE ie.encounter = ?";
 
-                $list_result = $db->get_results($sql_visits);
+                $list_result = sqlStatement($sql_visits,array($res['encounter']));
 
                 $xml_string .= "<Issues>";
-                if ($list_result) {
-                    for ($j = 0; $j < count($list_result); $j++) {
+                if ($list_result->_numOfRows > 0) {
+                    
+                    while ($list_res = sqlFetchArray($list_result)) {
+                     
                         $xml_string .= "<Issue>\n";
-                        foreach ($list_result[$j] as $fieldName => $fieldValue) {
+                        foreach ($list_res as $fieldName => $fieldValue) {
                             $rowValue = xmlsafestring($fieldValue);
                             $xml_string .= "<$fieldName>$rowValue</$fieldName>\n";
                         }
@@ -60,17 +61,17 @@ if ($userId = validateToken($token)) {
                 }
                 $xml_string .= "</Issues>";
 
-                $sql_soap = "SELECT fs.subjective,fs.objective,fs.assessment,fs.plan 
+                $sql_soap = $sql_soap = "SELECT fs.subjective,fs.objective,fs.assessment,fs.plan 
                                     FROM `forms` AS f
                                     INNER JOIN `form_soap` as fs ON fs.`id` = f.`form_id`
-                                    WHERE f.encounter = {$result[$i]->encounter}
+                                    WHERE f.encounter = ?
                                     AND f.form_name = 'SOAP'
-                                    AND NOT EXISTS (select 1 from `forms` where `form_name` = f.`form_name` and `date` > f.`date` and encounter = {$result[$i]->encounter})";
+                                    AND NOT EXISTS (select 1 from `forms` where `form_name` = f.`form_name` and `date` > f.`date` and encounter = ?)";
 
-                $list_result = $db->get_results($sql_soap);
+                $list_result = sqlQuery($sql_soap,array($res['encounter'],$res['encounter']));
 
                 if ($list_result) {
-                    foreach ($list_result[0] as $fieldName => $fieldValue) {
+                    foreach ($list_result as $fieldName => $fieldValue) {
                         $rowValue = xmlsafestring($fieldValue);
                         $xml_string .= "<$fieldName>$rowValue</$fieldName>\n";
                     }

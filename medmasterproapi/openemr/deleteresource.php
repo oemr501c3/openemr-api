@@ -1,5 +1,22 @@
 <?php
-
+/**
+ * Copyright (C) 2012 Karl Englund <karl@mastermobileproducts.com>
+ *
+ * LICENSE: This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 3
+ * of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://opensource.org/licenses/gpl-3.0.html>;.
+ *
+ * @package OpenEMR
+ * @author  Karl Englund <karl@mastermobileproducts.com>
+ * @link    http://www.open-emr.org
+ */
 header("Content-Type:text/xml");
 $ignoreAuth = true;
 require_once 'classes.php';
@@ -8,7 +25,7 @@ $xml_string = "";
 $xml_string = "<Resource>";
 
 $token = $_POST['token'];
-$option_id = $_POST['option_id'];
+$option_id = add_escape_custom($_POST['option_id']);
 $list_id = 'ExternalResources';
 
 if ($userId = validateToken($token)) {
@@ -40,17 +57,14 @@ if ($userId = validateToken($token)) {
             unlink($relative_path_thumb);
         }
 
-        $strQuery = "DELETE FROM `list_options` WHERE `list_id` LIKE '{$list_id}' AND 
-                    `option_id` LIKE '{$option_id}'";
-
-
-        $result = $db->query($strQuery);
+        $strQuery = "DELETE FROM list_options WHERE list_id LIKE '{$list_id}' AND 
+                    `option_id` LIKE ?";
+		$result = sqlStatement($strQuery, array($option_id));
 
 
 
         if ($result) {
             newEvent($event = 'resourse-record-select', $user, $groupname = 'Default', $success = '1', $comments = $strQuery1);
-            newEvent($event = 'resourse-record-delete', $user, $groupname = 'Default', $success = '1', $comments = $strQuery);
 
             $xml_string .= "<status>0</status>";
             $xml_string .= "<reason>The Resource has been deleted</reason>";

@@ -1,5 +1,22 @@
 <?php
-
+/**
+ * Copyright (C) 2012 Karl Englund <karl@mastermobileproducts.com>
+ *
+ * LICENSE: This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 3
+ * of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://opensource.org/licenses/gpl-3.0.html>;.
+ *
+ * @package OpenEMR
+ * @author  Karl Englund <karl@mastermobileproducts.com>
+ * @link    http://www.open-emr.org
+ */
 header("Content-Type:text/xml");
 $ignoreAuth = true;
 require_once 'classes.php';
@@ -9,22 +26,22 @@ $xml_string = "<checkout>";
 
 //Post by form:-
 $token = $_POST['token'];
-$patientId = $_POST['patientId'];
-$visit_id = $_POST['visit_id'];
-$payment_method = $_POST['payment_method'];
-$check_ref_number = $_POST['check_ref_number'];
-$discountAmount = $_POST['discountAmount'];
-$billing_id = $_POST['billing_id'];
+$patientId =add_escape_custom( $_POST['patientId']);
+$visit_id = add_escape_custom($_POST['visit_id']);
+$payment_method = add_escape_custom($_POST['payment_method']);
+$check_ref_number = add_escape_custom($_POST['check_ref_number']);
+$discountAmount = add_escape_custom($_POST['discountAmount']);
+$billing_id = add_escape_custom($_POST['billing_id']);
 
 //Post by getfeesheet web serivece for insertion
-$feeSum = $_POST['feeSum'];
+$feeSum = add_escape_custom($_POST['feeSum']);
 $fee = -$amount_paid;
 $amount_paid = $feeSum - $discountAmount;
 
 //Post by getfeesheet web serivece for view Only
-$itemFee = $_POST['itemFee'];
+$itemFee = add_escape_custom($_POST['itemFee']);
 $date = $_POST['date'];
-$units = $_POST['units'];
+$units = add_escape_custom($_POST['units']);
 
 $code_type = 'COPAY';
 $auth = "1";

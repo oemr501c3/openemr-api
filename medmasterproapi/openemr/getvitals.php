@@ -3,11 +3,12 @@
 header("Content-Type:text/xml");
 $ignoreAuth = true;
 require_once('classes.php');
+
 $xml_string = "";
 $xml_string .= "<PatientVitals>\n";
 
 $token = $_POST['token'];
-$visit_id = $_POST['visit_id'];
+$visit_id = add_escape_custom($_POST['visit_id']);
 
 if ($userId = validateToken($token)) {
     $user = getUsername($userId);
@@ -16,29 +17,32 @@ if ($userId = validateToken($token)) {
         $strQuery = "SELECT fv.* 
                                 FROM  `forms` AS f
                                 INNER JOIN  `form_vitals` AS fv ON f.form_id = fv.id
-                                WHERE  `encounter` = {$visit_id}
+                                WHERE  `encounter` = ?
                                 AND  `form_name` =  'Vitals'
                                 ORDER BY f.id DESC";
-        $result = $db->get_results($strQuery);
+        $result = sqlStatement($strQuery,array($visit_id));
 
-        if ($result) {
+        if ($result->_numOfRows > 0) {
             $xml_string .= "<status>0</status>\n";
             $xml_string .= "<reason>Success processing patient vitals records</reason>\n";
 
-            for ($i = 0; $i < count($result); $i++) {
+            while ($res = sqlFetchArray($result)) {
                 $xml_string .= "<Vital>\n";
 
-                foreach ($result[$i] as $fieldName => $fieldValue) {
+                foreach ($res as $fieldName => $fieldValue) {
                     $rowValue = xmlsafestring($fieldValue);
                     $xml_string .= "<$fieldName>$rowValue</$fieldName>\n";
                 }
-
+                
+                
                 $user_query = "SELECT  `firstname` ,  `lastname` 
                                                 FROM  `medmasterusers` 
-                                                WHERE username LIKE  '{$result[$i]->user}'";
-                $user_result = $db->get_row($user_query);
-                $xml_string .= "<firstname>{$user_result->firstname}</firstname>\n";
-                $xml_string .= "<lastname>{$user_result->lastname}</lastname>\n";
+                                                WHERE username LIKE  ?";
+                
+                $user_result = sqlQuery($user_query,array($res['user']));
+                
+                $xml_string .= "<firstname>".$user_result['firstname']."</firstname>\n";
+                $xml_string .= "<lastname>".$user_result['lastname']."</lastname>\n";
                 $xml_string .= "</Vital>\n";
             }
         } else {
