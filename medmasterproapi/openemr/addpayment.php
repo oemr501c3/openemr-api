@@ -1,5 +1,22 @@
 <?php
-
+/**
+ * Copyright (C) 2012 Karl Englund <karl@mastermobileproducts.com>
+ *
+ * LICENSE: This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 3
+ * of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://opensource.org/licenses/gpl-3.0.html>;.
+ *
+ * @package OpenEMR
+ * @author  Karl Englund <karl@mastermobileproducts.com>
+ * @link    http://www.open-emr.org
+ */
 header("Content-Type:text/xml");
 $ignoreAuth = true;
 require_once 'classes.php';
@@ -9,20 +26,20 @@ $xml_string = "<payment>";
 
 $token = $_POST['token'];
 
-$payer_id = $_POST['payer_id'];
+$payer_id = add_escape_custom($_POST['payer_id']);
 $closed = 0;
-$modified_time = date('Y-m-d H:i:s');
-$pay_total = $_POST['pay_total'];
-$payment_method = $_POST['payment_method'];
-$check_ref_number = $_POST['check_ref_number'];
+$modified_time = add_escape_custom(date('Y-m-d H:i:s'));
+$pay_total = add_escape_custom($_POST['pay_total']);
+$payment_method = add_escape_custom($_POST['payment_method']);
+$check_ref_number = add_escape_custom($_POST['check_ref_number']);
 $check_date = $_POST['check_date'];
 $post_to_date = $_POST['post_to_date'];
 $deposit_date = $_POST['deposit_date'];
-$patient_id = $_POST['patient_id'];
-$description = mysql_real_escape_string($_POST['description']);
-$payment_category = $_POST['payment_category'];
-$payment_type = $_POST['payment_type'];
-$global_amount = $_POST['global_amount'];
+$patient_id = add_escape_custom($_POST['patient_id']);
+$description = mysql_real_escape_string(add_escape_custom($_POST['description']));
+$payment_category = add_escape_custom($_POST['payment_category']);
+$payment_type = add_escape_custom($_POST['payment_type']);
+$global_amount = add_escape_custom($_POST['global_amount']);
 
 if ($userId = validateToken($token)) {
     $user = getUsername($userId);

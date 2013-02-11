@@ -1,5 +1,22 @@
 <?php
-
+/**
+ * Copyright (C) 2012 Karl Englund <karl@mastermobileproducts.com>
+ *
+ * LICENSE: This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 3
+ * of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://opensource.org/licenses/gpl-3.0.html>;.
+ *
+ * @package OpenEMR
+ * @author  Karl Englund <karl@mastermobileproducts.com>
+ * @link    http://www.open-emr.org
+ */
 header("Content-Type:text/xml");
 $ignoreAuth = true;
 require_once('classes.php');
@@ -8,17 +25,17 @@ $xml_string = "";
 $xml_string .= "<PatientVisit>";
 
 $token = $_POST['token'];
-$patientId = $_POST['patientId'];
+$patientId = add_escape_custom($_POST['patientId']);
 //$id = $_POST['id'];
-$reason = $_POST['reason'];
-$facility = $_POST['facility'];
-$facility_id = $_POST['facility_id'];
-$encounter = $_POST['encounter'];
+$reason = add_escape_custom($_POST['reason']);
+$facility = add_escape_custom($_POST['facility']);
+$facility_id = add_escape_custom($_POST['facility_id']);
+$encounter = add_escape_custom($_POST['encounter']);
 $dateService = $_POST['dateService'];
-$sensitivity = $_POST['sensitivity'];
-$pc_catid = $_POST['pc_catid'];
-$billing_facility = $_POST['billing_facility'];
-$list = $_POST['list'];
+$sensitivity = add_escape_custom($_POST['sensitivity']);
+$pc_catid = add_escape_custom($_POST['pc_catid']);
+$billing_facility = add_escape_custom($_POST['billing_facility']);
+$list = add_escape_custom($_POST['list']);
 
 if ($userId = validateToken($token)) {
     $user = getUsername($userId);
@@ -36,14 +53,14 @@ if ($userId = validateToken($token)) {
                         sensitivity = '" . $sensitivity . "', 
                         billing_facility  = " . $billing_facility . ",
                         pc_catid = '" . $pc_catid . "'    
-                    WHERE pid = " . $patientId . " AND encounter=" . $encounter;
-        $result = sqlStatement($strQuery);
+                    WHERE pid = ? " . " AND encounter = ?";
+        $result = sqlStatement($strQuery, array($patientId, $encounter));
 
         $list_res = 1;
         if (!empty($list)) {
 
-            $del_list_query = "DELETE FROM `issue_encounter` WHERE `pid` = {$patientId} AND `encounter` = " . $encounter;
-            $list_res = sqlStatement($del_list_query);
+            $del_list_query = "DELETE FROM `issue_encounter` WHERE `pid` = ? AND `encounter` = ?";
+            $list_res = sqlStatement($del_list_query, array($patientId, $encounter));
             $list_array = explode(',', $list);
 
 
@@ -55,7 +72,7 @@ if ($userId = validateToken($token)) {
                     $list_res = 0;
             }
         }
-        if ($result || $list_res) {
+        if ($result !== FALSE || $list_res !== FALSE) {
 
             $xml_string .= "<status>0</status>";
             $xml_string .= "<reason>Patient visit updated successfully</reason>";

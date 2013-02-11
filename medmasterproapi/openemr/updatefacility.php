@@ -1,5 +1,22 @@
 <?php
-
+/**
+ * Copyright (C) 2012 Karl Englund <karl@mastermobileproducts.com>
+ *
+ * LICENSE: This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 3
+ * of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://opensource.org/licenses/gpl-3.0.html>;.
+ *
+ * @package OpenEMR
+ * @author  Karl Englund <karl@mastermobileproducts.com>
+ * @link    http://www.open-emr.org
+ */
 header("Content-Type:text/xml");
 $ignoreAuth = true;
 require_once 'classes.php';
@@ -9,36 +26,36 @@ $xml_string = "<facility>";
 
 $token = $_POST['token'];
 
-$facilityId = $_POST['id'];
-$name = $_POST['name'];
-$phone = $_POST['phone'];
-$fax = $_POST['fax'];
-$street = $_POST['street'];
-$city = $_POST['city'];
-$state = $_POST['state'];
-$postal_code = $_POST['postal_code'];
-$country_code = $_POST['country_code'];
-$federal_ein = $_POST['federal_ein'];
-$service_location = $_POST['service_location'];
-$billing_location = $_POST['billing_location'];
-$accepts_assignment = $_POST['accepts_assignment'];
-$pos_code = $_POST['pos_code'];
-$x12_sender_id = $_POST['x12_sender_id'];
-$attn = $_POST['attn'];
-$domain_identifier = $_POST['domain_identifier'];
-$facility_npi = $_POST['facility_npi'];
-$tax_id_type = $_POST['tax_id_type'];
-$color = $_POST['color'];
+$facilityId = add_escape_custom($_POST['id']);
+$name = add_escape_custom($_POST['name']);
+$phone = add_escape_custom($_POST['phone']);
+$fax = add_escape_custom($_POST['fax']);
+$street = add_escape_custom($_POST['street']);
+$city = add_escape_custom($_POST['city']);
+$state = add_escape_custom($_POST['state']);
+$postal_code = add_escape_custom($_POST['postal_code']);
+$country_code = add_escape_custom($_POST['country_code']);
+$federal_ein = add_escape_custom($_POST['federal_ein']);
+$service_location = add_escape_custom($_POST['service_location']);
+$billing_location = add_escape_custom($_POST['billing_location']);
+$accepts_assignment = add_escape_custom($_POST['accepts_assignment']);
+$pos_code = add_escape_custom($_POST['pos_code']);
+$x12_sender_id = add_escape_custom($_POST['x12_sender_id']);
+$attn = add_escape_custom($_POST['attn']);
+$domain_identifier = add_escape_custom($_POST['domain_identifier']);
+$facility_npi = add_escape_custom($_POST['facility_npi']);
+$tax_id_type = add_escape_custom($_POST['tax_id_type']);
+$color = add_escape_custom($_POST['color']);
 
 if ($userId = validateToken($token)) {
     $user = getUsername($userId);
     $acl_allow = acl_check('admin', 'super', $user);
-    
+
     $_SESSION['authUser'] = $user;
     $_SESSION['authGroup'] = $site;
-    
+
     if ($acl_allow) {
-        
+
         $strQuery = 'UPDATE facility SET ';
         $strQuery .= 'name  = "' . $name . '",';
         $strQuery .= 'phone = "' . $phone . '",';
@@ -59,11 +76,11 @@ if ($userId = validateToken($token)) {
         $strQuery .= 'facility_npi = "' . $facility_npi . '",';
         $strQuery .= 'tax_id_type = "' . $tax_id_type . '",';
         $strQuery .= 'color = "' . $color . '",';
-        $strQuery .= ' WHERE id = ' . $facilityId;
+        $strQuery .= ' WHERE id = ?';
 
-        $result = sqlStatement($strQuery);
+        $result = sqlStatement($strQuery, array($facilityId));
 
-        if ($result) {
+        if ($result !== FALSE) {
             $xml_string .= "<status>0</status>";
             $xml_string .= "<reason>The Facility has been updated</reason>";
         } else {

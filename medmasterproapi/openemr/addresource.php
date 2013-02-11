@@ -1,5 +1,22 @@
 <?php
-
+/**
+ * Copyright (C) 2012 Karl Englund <karl@mastermobileproducts.com>
+ *
+ * LICENSE: This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 3
+ * of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://opensource.org/licenses/gpl-3.0.html>;.
+ *
+ * @package OpenEMR
+ * @author  Karl Englund <karl@mastermobileproducts.com>
+ * @link    http://www.open-emr.org
+ */
 header("Content-Type:text/xml");
 $ignoreAuth = true;
 require_once('classes.php');
@@ -7,11 +24,11 @@ require_once('classes.php');
 $xml_array = array();
 
 $token = $_POST['token'];
-$title = $_POST['title'];
-$option_id = $_POST['option_id'];
-$type = $_POST['type'];
+$title = add_escape_custom($_POST['title']);
+$option_id = add_escape_custom($_POST['option_id']);
+$type = add_escape_custom($_POST['type']);
 $data = isset($_POST['data']) ? $_POST['data'] : '';
-$ext = $_POST['ext'];
+$ext = add_escape_custom($_POST['ext']);
 
 $list_id = 'ExternalResources';
 $seq = 0;

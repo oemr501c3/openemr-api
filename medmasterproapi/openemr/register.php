@@ -3,20 +3,20 @@
 header("Content-Type:text/xml");
 $ignoreAuth = true;
 require_once 'classes.php';
-
 $xml_array = array();
 
-$firstname = $_POST['firstname'];
-$lastname = $_POST['lastname'];
-$phone = $_POST['phone'];
-$email = $_POST['email'];
-$username = $_POST['username'];
-$password = $_POST['password'];
-$greetings = isset($_POST['greetings']) ? $_POST['greetings'] : "";
-$title = !empty($_POST['title']) ? $_POST['title'] : 'Doctor';
+$firstname = add_escape_custom($_POST['firstname']);
+$lastname = add_escape_custom($_POST['lastname']);
+$phone = add_escape_custom($_POST['phone']);
+$email = add_escape_custom($_POST['email']);
+$username = add_escape_custom($_POST['username']);
+$password = add_escape_custom($_POST['password']);
+$greetings = isset($_POST['greetings']) ? add_escape_custom($_POST['greetings']) : "";
+$title = !empty($_POST['title']) ? add_escape_custom($_POST['title']) : 'Doctor';
 $device_token = isset($_REQUEST['device_token']) ? $_REQUEST['device_token'] : '';
 
-$pin = !empty($_POST['pin']) ? $_POST['pin'] : substr(uniqid(rand()), 0, 4);
+$pin = !empty($_POST['pin']) ? add_escape_custom($_POST['pin']) : substr(uniqid(rand()), 0, 4);
+
 
 $createDate = date('Y-m-d');
 
@@ -27,11 +27,12 @@ $gacl_aro_id = $result5['id'];
 sqlStatement("unlock tables");
 $secretKey = getUniqueSecretkey();
 
+
 $strQuery = "SELECT * FROM medmasterusers WHERE username LIKE '{$username}'";
-$result = $db->query($strQuery);
+$result = sqlQuery($strQuery);
 
 $strQueryUsers = "SELECT * FROM users WHERE username LIKE '{$username}'";
-$resultUsers = $db->query($strQueryUsers);
+$resultUsers = sqlQuery($strQueryUsers);
 
 if ($result || $resultUsers) {
     $xml_array['status'] = -2;
@@ -46,35 +47,37 @@ if ($result || $resultUsers) {
 
 
     $password1 = sha1($password);
-    $strQuery1 = "INSERT INTO `users`(`username`, `password`, `fname`, `lname`,  `phone`, `email`, `authorized`)
-                            VALUES ('{$username}','{$password1}','{$firstname}','{$lastname}','{$phone}','{$email}',1)";
-    $result1 = $db->query($strQuery1);
-    $last_user_id = mysql_insert_id();
+    $pin1 = sha1($pin);
+
+    $strQuery1 = "INSERT INTO `users`(`username`, `password`, `fname`, `lname`,  `phone`, `email`, `authorized`,`calendar`, `upin`, `create_date`, `secret_key`,  `title`, `ip_address`, `country_code`, `country_name`, `state`, `city`, `zip`, `latidute`, `longitude`, `time_zone`)
+                            VALUES ('{$username}','{$password1}','{$firstname}','{$lastname}','{$phone}','{$email}',1,1, '" . $pin1 . "', '" . $createDate . "','" . $secretKey . "','{$title}','{$responce_array->ipAddress}','{$responce_array->countryCode}','{$responce_array->countryName}','{$responce_array->regionName}','{$responce_array->cityName}','{$responce_array->zipCode}','{$responce_array->latitude}','{$responce_array->longitude}','{$responce_array->timeZone}')";
+    $result1 = sqlInsert($strQuery1);
+
+
+    $last_user_id = $result1;
 
 
     $strQuery2 = "INSERT INTO `gacl_aro`(`id`, `section_value`, `value`, `order_value`, `name`) 
                     VALUES ('{$gacl_aro_id}', 'users', '{$username}', '10','" . $firstname . " " . $lastname . "')";
 
-    $result2 = $db->query($strQuery2);
+
+    $result2 = sqlInsert($strQuery2);
+
 
     $strQuery3 = "INSERT INTO `groups`(`name`, `user`) 
                         VALUES ('Default', '" . $username . "')";
-    $result3 = $db->query($strQuery3);
+    $result3 = sqlInsert($strQuery3);
+
 
     $strQuery4 = "INSERT INTO `gacl_groups_aro_map`(`group_id`, `aro_id`) 
                     VALUES('11', '" . $gacl_aro_id . "')";
-    $result4 = $db->query($strQuery4);
+    $result4 = sqlInsert($strQuery4);
 
-    $pin1 = sha1($pin);
-    $strQuery = "INSERT INTO medmasterusers ( `firstname`, `lastname`, `phone`, `email`, `username`, `password`, `pin`, `create_date`, `secret_key`, `greeting`, `title`, `uid` , `ip_address`, `country_code`, `country_name`, `region_name`, `city_name`, `zip_code`, `latidute`, `longitude`, `time_zone`)
-                  VALUES ( '" . $firstname . "', '" . $lastname . "', '" . $phone . "', '" . $email . "', '" . $username . "', '" . $password1 . "', '" . $pin1 . "', '" . $createDate . "','" . $secretKey . "','{$greetings}','{$title}',{$last_user_id} ,'{$responce_array->ipAddress}','{$responce_array->countryCode}','{$responce_array->countryName}','{$responce_array->regionName}','{$responce_array->cityName}','{$responce_array->zipCode}','{$responce_array->latitude}','{$responce_array->longitude}','{$responce_array->timeZone}')";
 
-    $result = $db->query($strQuery);
-    $userId = mysql_insert_id();
+    $token = createToken($last_user_id, true, $device_token);
 
-    $token = createToken($userId, true, $device_token);
-
-    if ($result && $result1 && $result2 && $result3 && $result4 && $token) {
+    
+    if ($result1 && $result2 && $result3 && $result4 && $token) {
         $mail = new PHPMailer();
         $mail->IsSendmail();
         $body = "<html><body>

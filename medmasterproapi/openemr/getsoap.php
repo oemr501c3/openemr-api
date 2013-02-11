@@ -8,7 +8,7 @@ $xml_string = "<soaps>";
 
 
 $token = $_POST['token'];
-$visit_id = !empty($_POST['visit_id']) ? $_POST['visit_id'] : -1;
+$visit_id = !empty($_POST['visit_id']) ? add_escape_custom($_POST['visit_id']) : -1;
 
 if ($userId = validateToken($token)) {
     $user = getUsername($userId);
