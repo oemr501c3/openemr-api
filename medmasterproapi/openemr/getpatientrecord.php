@@ -1,10 +1,27 @@
 <?php
-
+/**
+ * Copyright (C) 2012 Karl Englund <karl@mastermobileproducts.com>
+ *
+ * LICENSE: This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 3
+ * of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://opensource.org/licenses/gpl-3.0.html>;.
+ *
+ * @package OpenEMR
+ * @author  Karl Englund <karl@mastermobileproducts.com>
+ * @link    http://www.open-emr.org
+ */
 header("Content-Type:text/xml");
 $ignoreAuth = true;
 require_once('classes.php');
 
-$p_id = $_REQUEST['patientID'];
+$p_id = add_escape_custom($_REQUEST['patientID']);
 $token = $_REQUEST['token'];
 
 $xml_array = array();
@@ -26,6 +43,7 @@ if ($userId = validateToken($token)) {
 
             $ethencity_query = "SELECT option_id, title FROM list_options WHERE list_id  = 'ethnicity' AND `option_id` = '" . $patient["ethnicity"] . "'";
             $ethencity_result = $db->get_row($ethencity_query);
+           
             if ($ethencity_result) {
                 $xml_array['Patient']['demographics']['ethnicityvalue'] = $ethencity_result->title;
             } else {
@@ -138,14 +156,14 @@ if ($userId = validateToken($token)) {
 				pulse, respiration, note as vitalnote, bmi, bmi_status, waist_circ, head_circ,
 				oxygen_saturation 
 				FROM form_vitals
-				WHERE pid = '$p_id'
+				WHERE pid = ?
 				ORDER BY DATE DESC";
 
-            $dbresult8 = $db->query($strQuery8);
+            $dbresult8 = sqlStatement($strQuery8,array($p_id));
             if ($dbresult8) {
                 $counter8 = 0;
                 $xml_array['Patient']['vitalslist']['status'] = 0;
-                while ($row8 = $db->get_row($query = $strQuery8, $output = ARRAY_A, $y = $counter8)) {
+                while ($row8 = sqlFetchArray($dbresult8)) {
                     foreach ($row8 as $fieldname => $fieldvalue8) {
                         $rowvalue = xmlsafestring($fieldvalue8);
                         $xml_array['Patient']['vitalslist']['vitals-' . $counter8][$fieldname] = $rowvalue;

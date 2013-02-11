@@ -9,7 +9,7 @@ require_once ('includes/pdflibrary/tcpdf.php');
 $xml_string = "";
 
 $token = $_POST['token'];
-$visit_id = $_POST['visit_id'];
+$visit_id = add_escape_custom($_POST['visit_id']);
 
 if ($userId = validateToken($token)) {
     $user = getUsername($userId);

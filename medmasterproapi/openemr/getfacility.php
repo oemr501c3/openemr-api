@@ -1,5 +1,22 @@
 <?php
-
+/**
+ * Copyright (C) 2012 Karl Englund <karl@mastermobileproducts.com>
+ *
+ * LICENSE: This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 3
+ * of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://opensource.org/licenses/gpl-3.0.html>;.
+ *
+ * @package OpenEMR
+ * @author  Karl Englund <karl@mastermobileproducts.com>
+ * @link    http://www.open-emr.org
+ */
 header("Content-Type:text/xml");
 $ignoreAuth = true;
 require_once 'classes.php';
@@ -8,6 +25,7 @@ $xml_string = "";
 $xml_string = "<facilities>";
 
 $token = $_POST['token'];
+
 $primary_business_entity = 0;
 
 if ($userId = validateToken($token)) {
@@ -16,16 +34,17 @@ if ($userId = validateToken($token)) {
     if ($acl_allow) {
 
         $strQuery = "SELECT id, name FROM facility";
-        $result = $db->get_results($strQuery);
 
-        if ($result) {
+        $result = sqlStatement($strQuery,array());
+        
+        if ($result->_numOfRows > 0) {
             $xml_string .= "<status>0</status>";
             $xml_string .= "<reason>The Facilities Record has been fetched</reason>";
-
-            for ($i = 0; $i < count($result); $i++) {
+ 
+            while($res = sqlFetchArray($result)){
                 $xml_string .= "<facility>\n";
 
-                foreach ($result[$i] as $fieldName => $fieldValue) {
+                foreach ($res as $fieldName => $fieldValue) {
                     $rowValue = xmlsafestring($fieldValue);
                     $xml_string .= "<$fieldName>$rowValue</$fieldName>\n";
                 }

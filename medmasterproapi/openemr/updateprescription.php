@@ -1,5 +1,22 @@
 <?php
-
+/**
+ * Copyright (C) 2012 Karl Englund <karl@mastermobileproducts.com>
+ *
+ * LICENSE: This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 3
+ * of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://opensource.org/licenses/gpl-3.0.html>;.
+ *
+ * @package OpenEMR
+ * @author  Karl Englund <karl@mastermobileproducts.com>
+ * @link    http://www.open-emr.org
+ */
 header("Content-Type:text/xml");
 $ignoreAuth = true;
 require_once('classes.php');
@@ -9,19 +26,19 @@ $xml_string = "<prescription>";
 
 $token = $_POST['token'];
 
-$id = $_POST['id'];
+$id = add_escape_custom($_POST['id']);
 $startDate = $_POST['startDate'];
-$drug = $_POST['drug'];
+$drug = add_escape_custom($_POST['drug']);
 
-$dosage = $_POST['dosage'];
-$quantity = $_POST['quantity'];
+$dosage = add_escape_custom($_POST['dosage']);
+$quantity = add_escape_custom($_POST['quantity']);
 
-$per_refill = $_POST['refill'];
-$medication = $_POST['medication'];
-$note = $_POST['note'];
-$provider_id = $_POST['provider_id'];
+$per_refill = add_escape_custom($_POST['refill']);
+$medication = add_escape_custom($_POST['medication']);
+$note = add_escape_custom($_POST['note']);
+$provider_id = add_escape_custom($_POST['provider_id']);
 
-$patientId = $_POST['patientId'];
+$patientId = add_escape_custom($_POST['patientId']);
 
 if ($userId = validateToken($token)) {
     $user = getUsername($userId);
@@ -44,8 +61,8 @@ if ($userId = validateToken($token)) {
                                         medication = '" . $medication . "',
                                         date_modified = '" . date('Y-m-d') . "',
                                         note = '" . $note . "'
-                             WHERE id = {$id}";
-        $result = sqlStatement($strQuery);
+                             WHERE id = ?";
+        $result = sqlStatement($strQuery,array($id));
 
         $list_result = 1;
         if ($medication) {
@@ -68,7 +85,7 @@ if ($userId = validateToken($token)) {
         if ($deviceToken) {
             $notification_res = notification($deviceToken, $badge, $msg_count = 0, $apt_count = 0, $message = 'Update Prescription Notification!');
         }
-        if ($result && $list_result) {
+        if ($result !== FALSE && $list_result !== FALSE) {
 
             $xml_string .= "<status>0</status>";
             $xml_string .= "<reason>The Patient prescription has been updated</reason>";

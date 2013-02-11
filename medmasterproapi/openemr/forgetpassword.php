@@ -3,14 +3,15 @@
 header("Content-Type:text/xml");
 $ignoreAuth = true;
 require_once 'classes.php';
-ini_set('display_errors', '1');
+
 $xml_string = "";
 $xml_string = "<forgetpassword>";
 
-$email = $_POST['email'];
+$email = add_escape_custom($_POST['email']);
 
-$strQuery = "SELECT id,username, password, firstname, lastname FROM medmasterusers WHERE email='" . $email . "'";
-$result = $db->get_row($strQuery);
+
+$strQuery = "SELECT id,username, password, fname, lname FROM users WHERE email= ?";
+$result = sqlQuery($strQuery,array($email));
 
 if ($result) {
     $xml_string .= "<status>0</status>";
@@ -21,14 +22,12 @@ if ($result) {
     $pin = substr(uniqid(rand()), 0, 4);
 	$pin1 = sha1($pin);
 
-    $strQuery1 = "UPDATE `medmasterusers` SET `password`='" . $password1 . "', `pin`='" . $pin1 . "' WHERE email = '" . $email . "'";
-    $result1 = $db->query($strQuery1);
+    $strQuery1 = "UPDATE `users` SET `password`='" . add_escape_custom($password1) . "', `upin`='" . add_escape_custom($pin1) . "' WHERE email = ?";
     
-    $strQuery2 = "UPDATE `users` SET `password`='" . $password1 . "' WHERE email = '" . $email . "'";
-    $result1 = $db->query($strQuery2);
+    $result1 = sqlStatement($strQuery1,array($email));
     
-    
-    if ($result1 && $result1) {
+    if ($result1 !== FALSE) {
+        
         $mail = new PHPMailer();
         $mail->IsSendmail();
         $body = "<html><body>
@@ -40,7 +39,7 @@ if ($result) {
 								<td>Here are the details of your account: </td>
 							</tr>
 							<tr>
-								<td>Username: " . $result->username . "</td>
+								<td>Username: " . $result['username'] . "</td>
 							</tr>
 							<tr>
 								<td>Password: " . $password . "</td>
@@ -61,7 +60,6 @@ if ($result) {
         $mail->AltBody = "To view the message, please use an HTML compatible email viewer!"; // optional, comment out and test
         $mail->MsgHTML($body);
 
-//        echo $body;
         if (!$mail->Send()) {
             $xml_string .= "<error>" . $mail->ErrorInfo . "</error>";
         } else {

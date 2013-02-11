@@ -1,4 +1,22 @@
 <?php
+/**
+ * Copyright (C) 2012 Karl Englund <karl@mastermobileproducts.com>
+ *
+ * LICENSE: This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 3
+ * of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://opensource.org/licenses/gpl-3.0.html>;.
+ *
+ * @package OpenEMR
+ * @author  Karl Englund <karl@mastermobileproducts.com>
+ * @link    http://www.open-emr.org
+ */
 header("Content-Type:text/xml");
 $ignoreAuth = true;
 require_once ("classes.php");
@@ -7,32 +25,32 @@ $xml_string = "";
 $xml_string = "<contact>";
 
 $token = $_POST['token'];
-$title = $_POST['title'];
-$firstname = $_POST['firstname'];
-$lastname = $_POST['lastname'];
-$middlename = $_POST['middlename'];
-$upin = $_POST['upin'];
-$npi = $_POST['npi'];
-$taxonomy = $_POST['taxonomy'];
-$specialty = $_POST['specialty'];
-$organization = $_POST['organization'];
-$valedictory = $_POST['valedictory'];
-$assistant = $_POST['assistant'];
-$email = $_POST['email'];
-$url = $_POST['url'];
-$street = $_POST['street'];
-$streetb = $_POST['streetb'];
-$city = $_POST['city'];
-$state = $_POST['state'];
-$zip = $_POST['zip'];
-$home_phone = $_POST['home_phone'];
-$work_phone1 = $_POST['work_phone1'];
-$work_phone2 = $_POST['work_phone2'];
-$mobile = $_POST['mobile'];
-$fax = $_POST['fax'];
-$notes = $_POST['notes'];
+$title = add_escape_custom($_POST['title']);
+$firstname = add_escape_custom($_POST['firstname']);
+$lastname = add_escape_custom($_POST['lastname']);
+$middlename = add_escape_custom($_POST['middlename']);
+$upin = add_escape_custom($_POST['upin']);
+$npi = add_escape_custom($_POST['npi']);
+$taxonomy = add_escape_custom($_POST['taxonomy']);
+$specialty = add_escape_custom($_POST['specialty']);
+$organization = add_escape_custom($_POST['organization']);
+$valedictory = add_escape_custom($_POST['valedictory']);
+$assistant = add_escape_custom($_POST['assistant']);
+$email = add_escape_custom($_POST['email']);
+$url = add_escape_custom($_POST['url']);
+$street = add_escape_custom($_POST['street']);
+$streetb = add_escape_custom($_POST['streetb']);
+$city = add_escape_custom($_POST['city']);
+$state = add_escape_custom($_POST['state']);
+$zip = add_escape_custom($_POST['zip']);
+$home_phone = add_escape_custom($_POST['home_phone']);
+$work_phone1 = add_escape_custom($_POST['work_phone1']);
+$work_phone2 = add_escape_custom($_POST['work_phone2']);
+$mobile = add_escape_custom($_POST['mobile']);
+$fax = add_escape_custom($_POST['fax']);
+$notes = add_escape_custom($_POST['notes']);
 $image_data = $_POST['imageData'];
-$image_title = $_POST['imageTitle'];
+$image_title = add_escape_custom($_POST['imageTitle']);
 
 if ($userId = validateToken($token)) {
     $user = getUsername($userId);
