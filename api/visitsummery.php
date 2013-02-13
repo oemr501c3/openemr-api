@@ -2,14 +2,18 @@
 
 header("Content-Type:text/xml");
 $ignoreAuth = true;
+
 require_once('classes.php');
-require_once ('includes/pdflibrary/config/lang/eng.php');
-require_once ('includes/pdflibrary/tcpdf.php');
+
+
+require_once('includes/pdflibrary/config/lang/eng.php');
+require_once('includes/pdflibrary/tcpdf.php');
+
 
 $xml_string = "";
 
 $token = $_POST['token'];
-$visit_id = add_escape_custom($_POST['visit_id']);
+$visit_id = $_POST['visit_id'];
 
 if ($userId = validateToken($token)) {
     $user = getUsername($userId);
@@ -17,10 +21,10 @@ if ($userId = validateToken($token)) {
     if ($acl_allow) {
         $strQuery = "SELECT * , MAX( DATE ) , MAX( form_id ) AS form_id_max, COUNT( 0 ) AS count
                             FROM  `forms` 
-                            WHERE encounter = {$visit_id}
+                            WHERE encounter = ?
                             GROUP BY form_name";
 
-        $result = $db->get_results($strQuery);
+        $result = sqlStatement($strQuery,array($visit_id));
 
         $ros_check = false;
         $rosc_check = false;
@@ -38,101 +42,99 @@ if ($userId = validateToken($token)) {
 
         $total_soap = 0;
         $soap_data = array();
+;
+        if ($result->_numOfRows > 0) {
 
-//    echo $strQuery;
-        if ($result) {
-
-            foreach ($result as $record) {
-//            var_dump($record);continue;
-                switch ($record->form_name) {
+            while ($res = sqlFetchArray($result)) {
+                switch ($res['form_name']) {
                     case 'Review Of Systems':
                         $strQuery1 = "SELECT * 
                                         FROM  `form_ros` 
-                                        WHERE  `id` = {$record->form_id_max}";
-                        $ros = $db->get_results($strQuery1);
-                        if ($ros) {
-                            for ($i = 0; $i < count($ros); $i++) {
+                                        WHERE  `id` = ?";
+                        $ros = sqlStatement($strQuery1,array($res['form_id_max']));
+                        if ($ros->_numOfRows > 0) {
+                            while ($ros_res = sqlFetchArray($ros)){
                                 $xml_string .= "<ROS>\n";
-                                $xml_string .= "<records>{$record->count}</records>\n";
-                                foreach ($ros[$i] as $fieldName => $fieldValue) {
+                                $xml_string .= "<records>{$res['count']}</records>\n";
+                                foreach ($ros_res as $fieldName => $fieldValue) {
                                     $rowValue = xmlsafestring($fieldValue);
                                     $xml_string .= "<$fieldName>$rowValue</$fieldName>\n";
                                 }
                                 $xml_string .= "</ROS>\n";
-                                $ros_data = $ros[$i];
+                                $ros_data = $ros_res;
                             }
                         } else {
                             $xml_string .= "<ROS><records>0</records></ROS>\n";
                         }
-                        $total_ros = $record->count;
+                        $total_ros = $res['count'];
                         $ros_check = true;
                         break;
                     case 'Review of Systems Checks':
                         $strQuery2 = "SELECT * 
                                         FROM  `form_reviewofs` 
-                                        WHERE  `id` = {$record->form_id_max}";
-                        $rosc = $db->get_results($strQuery2);
+                                        WHERE  `id` = ?";
+                        $rosc = sqlStatement($strQuery2,array($res['form_id_max']));
 
-                        if ($rosc) {
-                            for ($i = 0; $i < count($rosc); $i++) {
+                        if ($rosc->_numOfRows > 0) {
+                            while ($rosc_res = sqlFetchArray($rosc)) {
                                 $xml_string .= "<ROSchecks>\n";
-                                $xml_string .= "<records>{$record->count}</records>\n";
+                                $xml_string .= "<records>{$res['count']}</records>\n";
 
-                                foreach ($rosc[$i] as $fieldName => $fieldValue) {
+                                foreach ($rosc_res as $fieldName => $fieldValue) {
                                     $rowValue = xmlsafestring($fieldValue);
                                     $xml_string .= "<$fieldName>$rowValue</$fieldName>\n";
                                 }
                                 $xml_string .= "</ROSchecks>\n";
-                                $ros_data_checks = $rosc[$i];
+                                $ros_data_checks = $rosc_res;
                             }
                         } else {
                             $xml_string .= "<ROSchecks><records>0</records></ROSchecks>\n";
                         }
                         $rosc_check = true;
-                        $total_ros_checks = $record->count;
+                        $total_ros_checks = $res['count'];
                         break;
                     case 'SOAP':
                         $strQuery3 = "SELECT * 
                                         FROM  `form_soap` 
-                                        WHERE  `id` = {$record->form_id_max}";
-                        $soap = $db->get_results($strQuery3);
-                        if ($soap) {
-                            for ($i = 0; $i < count($soap); $i++) {
+                                        WHERE  `id` = ?";
+                        $soap = sqlStatement($strQuery3,array($res['form_id_max']));
+                        if ($soap->_numOfRows > 0) {
+                            while ($soap_res = sqlFetchArray($soap)) {
                                 $xml_string .= "<SOAP>\n";
-                                $xml_string .= "<records>{$record->count}</records>\n";
+                                $xml_string .= "<records>{$res['count']}</records>\n";
 
-                                foreach ($soap[$i] as $fieldName => $fieldValue) {
+                                foreach ($soap_res as $fieldName => $fieldValue) {
                                     $rowValue = xmlsafestring($fieldValue);
                                     $xml_string .= "<$fieldName>$rowValue</$fieldName>\n";
                                 }
                                 $xml_string .= "</SOAP>\n";
-                                $soap_data = $soap[$i];
+                                $soap_data = $soap_res;
                             }
                         } else {
                             $xml_string .= "<SOAP><records>0</records></SOAP>\n";
                         }
-                        $total_soap = $record->count;
+                        $total_soap = $res['count'];
                         $soap_check = true;
                         break;
                     case 'Vitals':
                         $strQuery4 = "SELECT * 
                                         FROM  `form_vitals` 
-                                        WHERE  `id` = {$record->form_id_max}";
-                        $vitals = $db->get_results($strQuery4);
-                        if ($vitals) {
-                            for ($i = 0; $i < count($vitals); $i++) {
+                                        WHERE  `id` = ?";
+                        $vitals = sqlStatement($strQuery4,array($res['form_id_max']));
+                        if ($vitals->_numOfRows > 0) {
+                            while ($vitals_res = sqlFetchArray($vitals)) {
                                 $xml_string .= "<Vitals>\n";
-                                $xml_string .= "<records>{$record->count}</records>\n";
+                                $xml_string .= "<records>{$res['count']}</records>\n";
 
-                                foreach ($vitals[$i] as $fieldName => $fieldValue) {
+                                foreach ($vitals_res as $fieldName => $fieldValue) {
                                     $rowValue = xmlsafestring($fieldValue);
                                     $xml_string .= "<$fieldName>$rowValue</$fieldName>\n";
                                 }
                                 $xml_string .= "</Vitals>\n";
 
-                                $vital_data = $vitals[$i];
+                                $vital_data = $vitals_res;
                             }
-                            $total_vitals = $record->count;
+                            $total_vitals = $res['count'];
                         } else {
                             $xml_string .= "<Vitals><records>0</records></Vitals>\n";
                         }
@@ -163,7 +165,7 @@ if ($userId = validateToken($token)) {
         $count_query = "SELECT  `type` , COUNT( 0 ) AS count
                                                         FROM  `issue_encounter` AS ie
                                                         INNER JOIN  `lists` AS l ON ie.list_id = l.id
-                                                        WHERE ie.encounter = {$visit_id}
+                                                        WHERE ie.encounter = ?
                                                         GROUP BY  `type`";
         $medication_count = 0;
         $allergy_count = 0;
@@ -171,29 +173,28 @@ if ($userId = validateToken($token)) {
         $dental_count = 0;
         $surgery_count = 0;
 
-        $count_results = $db->get_results($count_query);
+        $count_results = sqlStatement($count_query,array($visit_id));
 
         $xml_string .= "<Issues>";
 
-        if ($count_results) {
-//        var_dump($count_results);
-//        exit;
-            foreach ($count_results as $count_result) {
-                switch ($count_result->type) {
+        if ($count_results->_numOfRows > 0) {
+
+                while ($count_result = sqlFetchArray($count_results)) {
+                switch ($count_result['type']) {
                     case 'allergy':
-                        $allergy_count = $count_result->count;
+                        $allergy_count = $count_result['count'];
                         break;
                     case 'dental':
-                        $dental_count = $count_result->count;
+                        $dental_count = $count_result['count'];
                         break;
                     case 'medical_problem':
-                        $medical_problem_count = $count_result->count;
+                        $medical_problem_count = $count_result['count'];
                         break;
                     case 'medication':
-                        $medication_count = $count_result->count;
+                        $medication_count = $count_result['count'];
                         break;
                     case 'surgery':
-                        $surgery_count = $count_result->count;
+                        $surgery_count = $count_result['count'];
                         break;
                 }
             }
@@ -201,15 +202,14 @@ if ($userId = validateToken($token)) {
             $sql_visits = "SELECT type,title,begdate,diagnosis
                                                                 FROM `issue_encounter` AS ie
                                                                 INNER JOIN `lists` AS l ON ie.list_id = l.id
-                                                                WHERE ie.encounter = " . $visit_id;
+                                                                WHERE ie.encounter = ?";
 
-            $list_result = $db->get_results($sql_visits);
+            $list_result = sqlStatement($sql_visits,array($visit_id));
 
-
-            if ($list_result) {
-                for ($j = 0; $j < count($list_result); $j++) {
+            if ($list_result->_numOfRows > 0) {
+                while ($list_res = sqlFetchArray($list_result)){
                     $xml_string .= "<Issue>\n";
-                    foreach ($list_result[$j] as $fieldName => $fieldValue) {
+                    foreach ($list_res as $fieldName => $fieldValue) {
                         $rowValue = xmlsafestring($fieldValue);
                         $xml_string .= "<$fieldName>$rowValue</$fieldName>\n";
                     }

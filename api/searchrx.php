@@ -20,14 +20,14 @@ if ($userId = validateToken($token)) {
     $acl_allow = acl_check('patients', 'med', $user);
 
     if ($acl_allow) {
-        $where = "r.date_modified >= '$form_from_date' AND " .
-                "r.date_modified <= '$form_to_date'";
+        $where = "r.date_modified >= '".add_escape_custom($form_from_date)."' AND " .
+                "r.date_modified <= '".add_escape_custom($form_to_date)."'";
         if ($form_patient_id)
-            $where .= " AND p.pid = '$form_patient_id'";
+            $where .= " AND p.pid = '".add_escape_custom($form_patient_id)."'";
         if ($form_drug_name)
-            $where .= " AND (d.name LIKE '$form_drug_name' OR r.drug LIKE '$form_drug_name')";
+            $where .= " AND (d.name LIKE '".add_escape_custom($form_drug_name)."' OR r.drug LIKE '".add_escape_custom($form_drug_name)."')";
         if ($form_lot_number)
-            $where .= " AND i.lot_number LIKE '$form_lot_number'";
+            $where .= " AND i.lot_number LIKE '".add_escape_custom($form_lot_number)."'";
 
         $query = "SELECT r.id, r.patient_id, " .
                 "r.date_modified, r.dosage, r.route, r.interval, r.refills, r.drug, " .

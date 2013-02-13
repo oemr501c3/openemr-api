@@ -1,22 +1,6 @@
 <?php
-/**
- * Copyright (C) 2012 Karl Englund <karl@mastermobileproducts.com>
- *
- * LICENSE: This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 3
- * of the License, or (at your option) any later version.
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://opensource.org/licenses/gpl-3.0.html>;.
- *
- * @package OpenEMR
- * @author  Karl Englund <karl@mastermobileproducts.com>
- * @link    http://www.open-emr.org
- */
+
+
 header("Content-Type:text/xml");
 $ignoreAuth = true;
 
@@ -26,11 +10,11 @@ $xml_string = "<soap>";
 
 $token = $_POST['token'];
 
-$soapId = add_escape_custom($_POST['id']);
-$subjective = mysql_real_escape_string(add_escape_custom($_POST['subjective']));
-$objective = mysql_real_escape_string(add_escape_custom($_POST['objective']));
-$assessment = add_escape_custom($_POST ['assessment']);
-$plan = mysql_real_escape_string(add_escape_custom($_POST['plan']));
+$soapId = $_POST['id'];
+$subjective = $_POST['subjective'];
+$objective = $_POST['objective'];
+$assessment = $_POST ['assessment'];
+$plan = $_POST['plan'];
 
 if ($userId = validateToken($token)) {
     $user = getUsername($userId);
@@ -39,10 +23,10 @@ if ($userId = validateToken($token)) {
     $_SESSION['authGroup'] = $site;
     if ($acl_allow) {
         $strQuery = 'UPDATE form_soap SET ';
-        $strQuery .= ' subjective = "' . $subjective . '",';
-        $strQuery .= ' objective = "' . $objective . '",';
-        $strQuery .= ' assessment = "' . $assessment . '",';
-        $strQuery .= ' plan = "' . $plan . '"';
+        $strQuery .= ' subjective = "' . add_escape_custom($subjective) . '",';
+        $strQuery .= ' objective = "' . add_escape_custom($objective) . '",';
+        $strQuery .= ' assessment = "' . add_escape_custom($assessment) . '",';
+        $strQuery .= ' plan = "' . add_escape_custom($plan) . '"';
         $strQuery .= ' WHERE id = ?';
 
         $result = sqlStatement($strQuery, array($soapId));

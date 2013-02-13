@@ -1,8 +1,8 @@
 <?php
 
 header("Content-Type:text/xml");
-require_once 'includes/class.database.php';
-require_once 'includes/functions.php';
+$ignoreAuth = true;
+require_once 'classes.php';
 
 $token = $_POST['token'];
 $firstname = $_POST['firstname'];
@@ -17,18 +17,18 @@ if ($userId = validateToken($token)) {
     $acl_allow = acl_check('patients', 'demo', $user);
     
     if ($acl_allow) {
-        $strQuery = "SELECT id, pid, fname as firstname, lname as lastname, phone_contact as phone, dob, sex as gender FROM patient_data WHERE fname Like '" . $firstname . "' OR lname Like '" . $lastname . "'";
-        $result = $db->query($strQuery);
+        $strQuery = "SELECT id, pid, fname as firstname, lname as lastname, phone_contact as phone, dob, sex as gender FROM patient_data WHERE fname LIKE ? OR lname LIKE ? ";
 
-        if ($result) {
+        $result = sqlStatement($strQuery, array("%".$firstname."%", "%".$lastname."%"));
+        if ($result->_numOfRows > 0) {
             $xml_string .= "<status>0</status>\n";
             $xml_string .= "<reason>Success processing patients records</reason>\n";
             $counter = 0;
 
-            while ($row = $db->get_row($query = $strQuery, $output = ARRAY_A, $y = $counter)) {
+            while ($res = sqlFetchArray($result)) {
                 $xml_string .= "<Patient>\n";
 
-                foreach ($row as $fieldname => $fieldvalue) {
+                foreach ($res as $fieldname => $fieldvalue) {
                     $rowvalue = xmlsafestring($fieldvalue);
                     $xml_string .= "<$fieldname>$rowvalue</$fieldname>\n";
                 }

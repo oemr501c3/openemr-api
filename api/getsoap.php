@@ -8,13 +8,13 @@ $xml_string = "<soaps>";
 
 
 $token = $_POST['token'];
-$visit_id = !empty($_POST['visit_id']) ? add_escape_custom($_POST['visit_id']) : -1;
+$visit_id = !empty($_POST['visit_id']) ? $_POST['visit_id'] : -1;
 
 if ($userId = validateToken($token)) {
     $user = getUsername($userId);
+    
     $acl_allow = acl_check('encounters', 'auth_a', $user);
     if ($acl_allow) {
-
         $strQuery = "SELECT fsoap. id,fsoap. date, subjective, objective, assessment, plan, fsoap.user
 				FROM `forms` AS f
 				INNER JOIN `form_soap` AS fsoap ON f.form_id = fsoap.id
@@ -24,7 +24,6 @@ if ($userId = validateToken($token)) {
         $result = sqlStatement($strQuery, array($visit_id));
 
         if ($result->_numOfRows > 0) {
-            newEvent($event = 'soap-record-get', $user, $groupname = 'Default', $success = '1', $comments = $strQuery);
             $xml_string .= "<status>0</status>";
             $xml_string .= "<reason>The Soap Record has been fetched</reason>";
 

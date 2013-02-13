@@ -1,24 +1,6 @@
 <?php
-/**
- * Copyright (C) 2012 Karl Englund <karl@mastermobileproducts.com>
- *
- * LICENSE: This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 3
- * of the License, or (at your option) any later version.
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://opensource.org/licenses/gpl-3.0.html>;.
- *
- * @package OpenEMR
- * @author  Karl Englund <karl@mastermobileproducts.com>
- * @link    http://www.open-emr.org
- */
-header("Content-Type:text/xml");
 
+header("Content-Type:text/xml");
 $ignoreAuth = true;
 require_once('classes.php');
 
@@ -26,8 +8,8 @@ $xml_string = "";
 $xml_string .= "<PrescriptionList>\n";
 
 $token = $_POST['token'];
-$patientId = add_escape_custom($_POST['patientID']);
-$visit_id = isset($_POST['visit_id']) && !empty($_POST['visit_id']) ? add_escape_custom($_POST['visit_id']) : '';
+$patientId = $_POST['patientID'];
+$visit_id = isset($_POST['visit_id']) && !empty($_POST['visit_id']) ? $_POST['visit_id'] : '';
 
 if ($userId = validateToken($token)) {
     $user_data = getUserData($userId);
@@ -36,13 +18,9 @@ if ($userId = validateToken($token)) {
     $username = $user_data['username'];
     $password = $user_data['password'];
 
-
     $acl_allow = acl_check('patients', 'med', $username);
-
     if ($acl_allow) {
-
         if ($visit_id) {
-
             $strQuery = "SELECT p.*,u.id AS provider_id,u.fname AS provider_fname,u.lname AS provider_lname,u.mname AS provider_mname 
                             FROM prescriptions as p
                             LEFT JOIN `users` as u ON u.id = p.provider_id

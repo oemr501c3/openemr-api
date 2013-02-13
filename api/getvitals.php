@@ -8,7 +8,7 @@ $xml_string = "";
 $xml_string .= "<PatientVitals>\n";
 
 $token = $_POST['token'];
-$visit_id = add_escape_custom($_POST['visit_id']);
+$visit_id = $_POST['visit_id'];
 
 if ($userId = validateToken($token)) {
     $user = getUsername($userId);

@@ -8,7 +8,7 @@ $xml_string = "";
 $xml_string = "<resources>";
 
 $token = $_POST['token'];
-$check_user = !empty($_POST['check_user']) ? add_escape_custom($_POST['check_user']) : '';
+$check_user = !empty($_POST['check_user']) ? $_POST['check_user'] : '';
 
 $list_id = 'ExternalResources';
 

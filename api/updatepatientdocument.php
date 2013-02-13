@@ -1,22 +1,5 @@
 <?php
-/**
- * Copyright (C) 2012 Karl Englund <karl@mastermobileproducts.com>
- *
- * LICENSE: This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 3
- * of the License, or (at your option) any later version.
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://opensource.org/licenses/gpl-3.0.html>;.
- *
- * @package OpenEMR
- * @author  Karl Englund <karl@mastermobileproducts.com>
- * @link    http://www.open-emr.org
- */
+
 header("Content-Type:text/xml");
 $ignoreAuth = true;
 require_once('classes.php');
@@ -25,11 +8,11 @@ $xml_array = array();
 
 $token = $_POST['token'];
 
-$image_content = add_escape_custom($_POST['data']);
-$patient_id = add_escape_custom($_POST['patientId']);
-$document_id = add_escape_custom($_POST['document_id']);
-$url = add_escape_custom($_POST['url']);
-$categoryId = add_escape_custom($_POST['categoryId']);
+$image_content = $_POST['data'];
+$patient_id = $_POST['patientId'];
+$document_id = $_POST['document_id'];
+$url = $_POST['url'];
+$categoryId = $_POST['categoryId'];
 
 if ($userId = validateToken($token)) {
     $user = getUsername($userId);
@@ -56,7 +39,7 @@ if ($userId = validateToken($token)) {
 
         $size = filesize($url);
 
-        $strQuery = "UPDATE `documents` SET `size`='{$size}',`hash`='{$hash}' WHERE id = ?";
+        $strQuery = "UPDATE `documents` SET `size`='" . add_escape_custom($size) . "',`hash`='" . add_escape_custom($hash) . "' WHERE id = ?";
         $result = sqlStatement($strQuery, array($document_id));
 
         if ($categoryId == 2) {

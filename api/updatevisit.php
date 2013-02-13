@@ -1,22 +1,6 @@
 <?php
-/**
- * Copyright (C) 2012 Karl Englund <karl@mastermobileproducts.com>
- *
- * LICENSE: This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 3
- * of the License, or (at your option) any later version.
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://opensource.org/licenses/gpl-3.0.html>;.
- *
- * @package OpenEMR
- * @author  Karl Englund <karl@mastermobileproducts.com>
- * @link    http://www.open-emr.org
- */
+
+
 header("Content-Type:text/xml");
 $ignoreAuth = true;
 require_once('classes.php');
@@ -25,17 +9,17 @@ $xml_string = "";
 $xml_string .= "<PatientVisit>";
 
 $token = $_POST['token'];
-$patientId = add_escape_custom($_POST['patientId']);
-//$id = $_POST['id'];
-$reason = add_escape_custom($_POST['reason']);
-$facility = add_escape_custom($_POST['facility']);
-$facility_id = add_escape_custom($_POST['facility_id']);
-$encounter = add_escape_custom($_POST['encounter']);
+
+$patientId = $_POST['patientId'];
+$reason = $_POST['reason'];
+$facility = $_POST['facility'];
+$facility_id = $_POST['facility_id'];
+$encounter = $_POST['encounter'];
 $dateService = $_POST['dateService'];
-$sensitivity = add_escape_custom($_POST['sensitivity']);
-$pc_catid = add_escape_custom($_POST['pc_catid']);
-$billing_facility = add_escape_custom($_POST['billing_facility']);
-$list = add_escape_custom($_POST['list']);
+$sensitivity = $_POST['sensitivity'];
+$pc_catid = $_POST['pc_catid'];
+$billing_facility = $_POST['billing_facility'];
+$list = $_POST['list'];
 
 if ($userId = validateToken($token)) {
     $user = getUsername($userId);
@@ -46,13 +30,13 @@ if ($userId = validateToken($token)) {
     if ($acl_allow) {
         $strQuery = "UPDATE form_encounter 
                     SET date = '" . date('Y-m-d H:i:s') . "', 
-                        reason = '" . $reason . "', 
-                        facility = '" . $facility . "', 
-                        facility_id = " . $facility_id . ", 
-                        onset_date = '" . $dateService . "', 
-                        sensitivity = '" . $sensitivity . "', 
-                        billing_facility  = " . $billing_facility . ",
-                        pc_catid = '" . $pc_catid . "'    
+                        reason = '" . add_escape_custom($reason) . "', 
+                        facility = '" . add_escape_custom($facility) . "', 
+                        facility_id = " . add_escape_custom($facility_id) . ", 
+                        onset_date = '" . add_escape_custom($dateService) . "', 
+                        sensitivity = '" . add_escape_custom($sensitivity) . "', 
+                        billing_facility  = " . add_escape_custom($billing_facility) . ",
+                        pc_catid = '" . add_escape_custom($pc_catid) . "'    
                     WHERE pid = ? " . " AND encounter = ?";
         $result = sqlStatement($strQuery, array($patientId, $encounter));
 
@@ -66,7 +50,7 @@ if ($userId = validateToken($token)) {
 
             foreach ($list_array as $list_item) {
                 $sql_list_query = "INSERT INTO `issue_encounter`(`pid`, `list_id`, `encounter`, `resolved`) 
-                            VALUES ({$patientId},{$list_item},{$encounter},0)";
+                            VALUES (".add_escape_custom($patientId).",".add_escape_custom($list_item).",".add_escape_custom($encounter).",0)";
                 $result1 = sqlStatement($sql_list_query);
                 if (!$list_res)
                     $list_res = 0;

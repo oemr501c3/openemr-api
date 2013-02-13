@@ -20,8 +20,8 @@ if ($userId = validateToken($token)) {
 				AND `form_name` = 'Review Of Systems'";
 
     $result = sqlStatement($strQuery, array($patientId));
-if ($result->_numOfRows > 0) {
-            newEvent($event = 'reviewofsystem-record-get', $user, $groupname = 'Default', $success = '1', $comments = $strQuery);
+
+    if ($result->_numOfRows > 0) {
             $xml_string .= "<status>0</status>";
             $xml_string .= "<reason>The Review of Systems Record has been fetched</reason>";
 

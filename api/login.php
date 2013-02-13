@@ -132,6 +132,7 @@ if ($result) {
     $ip = $_SERVER['REMOTE_ADDR'];
     newEvent($event = 'login', $username, $groupname = 'Default', $success = '1', 'success: ' . $ip);
 } else {
+    newEvent($event = 'login', $username, $groupname = 'Default', $success = '1', 'failure: ' . $ip . ". user password mismatch (" . sha1($password) . ")");
     $xml_array['status'] = -1;
     $xml_array['reason'] = 'Username/Password incorrect.';
 }

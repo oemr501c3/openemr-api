@@ -22,8 +22,8 @@ if ($userId = validateToken($token)) {
                                 WHERE username = ''
                                 AND password = ''
                                 AND active = 1
-                                AND list_id = 'ExternalResources'
                                 ";
+//        AND list_id = 'ExternalResources'
 $result = sqlStatement($strQuery, array());
         if ($result->_numOfRows > 0) {
             $xml_string .= "<status>0</status>";

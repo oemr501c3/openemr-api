@@ -1,22 +1,5 @@
 <?php
-/**
- * Copyright (C) 2012 Karl Englund <karl@mastermobileproducts.com>
- *
- * LICENSE: This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 3
- * of the License, or (at your option) any later version.
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://opensource.org/licenses/gpl-3.0.html>;.
- *
- * @package OpenEMR
- * @author  Karl Englund <karl@mastermobileproducts.com>
- * @link    http://www.open-emr.org
- */
+
 header("Content-Type:text/xml");
 $ignoreAuth = true;
 require_once('classes.php');
@@ -26,19 +9,19 @@ $xml_string = "<prescription>";
 
 $token = $_POST['token'];
 
-$id = add_escape_custom($_POST['id']);
+$id = $_POST['id'];
 $startDate = $_POST['startDate'];
-$drug = add_escape_custom($_POST['drug']);
+$drug = $_POST['drug'];
 
-$dosage = add_escape_custom($_POST['dosage']);
-$quantity = add_escape_custom($_POST['quantity']);
+$dosage = $_POST['dosage'];
+$quantity = $_POST['quantity'];
 
-$per_refill = add_escape_custom($_POST['refill']);
-$medication = add_escape_custom($_POST['medication']);
-$note = add_escape_custom($_POST['note']);
-$provider_id = add_escape_custom($_POST['provider_id']);
+$per_refill = $_POST['refill'];
+$medication = $_POST['medication'];
+$note = $_POST['note'];
+$provider_id = $_POST['provider_id'];
 
-$patientId = add_escape_custom($_POST['patientId']);
+$patientId = $_POST['patientId'];
 
 if ($userId = validateToken($token)) {
     $user = getUsername($userId);
@@ -47,34 +30,33 @@ if ($userId = validateToken($token)) {
     $_SESSION['authUser'] = $user;
     $_SESSION['authGroup'] = $site;
     $_SESSION['pid'] = $patientId;
-    
+
     if ($acl_allow) {
         $provider_username = getProviderUsername($provider_id);
 
         $strQuery = "UPDATE `prescriptions` set
-                                        provider_id = {$provider_id}, 
-                                        start_date = '" . $startDate . "', 
-                                        drug = '" . $drug . "', 
-                                        dosage = '" . $dosage . "', 
-                                        quantity = '" . $quantity . "',  
-                                        refills = '" . $per_refill . "', 
-                                        medication = '" . $medication . "',
+                                        provider_id = " . add_escape_custom($provider_id) . ", 
+                                        start_date = '" . add_escape_custom($startDate) . "', 
+                                        drug = '" . add_escape_custom($drug) . "', 
+                                        dosage = '" . add_escape_custom($dosage) . "', 
+                                        quantity = '" . add_escape_custom($quantity) . "',  
+                                        refills = '" . add_escape_custom($per_refill) . "', 
+                                        medication = '" . add_escape_custom($medication) . "',
                                         date_modified = '" . date('Y-m-d') . "',
-                                        note = '" . $note . "'
+                                        note = '" . add_escape_custom($note) . "'
                              WHERE id = ?";
-        $result = sqlStatement($strQuery,array($id));
+        $result = sqlStatement($strQuery, array($id));
 
         $list_result = 1;
         if ($medication) {
             $select_medication = "SELECT * FROM  `lists` 
                                     WHERE  `type` LIKE  'medication'
-                                            AND  `title` LIKE  '{$drug}' 
-                                            AND  `pid` = {$patientId}";
-            $result1 = $db->get_row($select_medication);
-
+                                            AND  `title` LIKE  ? 
+                                            AND  `pid` = ?";
+            $result1 = sqlQuery($select_medication, array($drug, $patient_id));
             if (!$result1) {
                 $list_query = "insert into lists(date,begdate,type,activity,pid,user,groupname,title) 
-                            values (now(),cast(now() as date),'medication',1,{$patientId},'{$user}','','{$drug}')";
+                            values (now(),cast(now() as date),'medication',1," . add_escape_custom($patientId) . ",'" . add_escape_custom($user) . "','','" . add_escape_custom($drug) . "')";
                 $list_result = sqlStatement($list_query);
             }
         }

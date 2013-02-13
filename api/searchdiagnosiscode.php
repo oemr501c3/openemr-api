@@ -15,26 +15,29 @@ if ($userId = validateToken($token)) {
     $user = getUsername($userId);
     $acl_allow = acl_check('admin', 'super', $user);
     if ($acl_allow) {
-        $strQuery = "SELECT code_text,code_text_short,code,code_type 
-                                    FROM  `codes` 
-                                    WHERE `code_type` = {$code_type}";
+
         if (!empty($search_term)) {
-            $strQuery .= " AND `code_text` LIKE '%{$search_term}%'";
+
+            $strQuery = "SELECT code_text,code_text_short,code,code_type 
+                                    FROM  `codes` 
+                                    WHERE `code_type` = ?  AND `code_text` LIKE ? ";
+            $result = sqlStatement($strQuery, array($code_type, "%" . $search_term . "%"));
         } else {
-            $strQuery .= " LIMIT 1000";
+
+            $strQuery = "SELECT code_text,code_text_short,code,code_type 
+                                    FROM  `codes` 
+                                    WHERE `code_type` = ? LIMIT 1000";
+            $result = sqlStatement($strQuery, array($code_type));
         }
 
-
-        $result = $db->get_results($strQuery);
-
-        if ($result) {
+        if ($result->_numOfRows > 0) {
             $xml_string .= "<status>0</status>";
             $xml_string .= "<reason>Facilities Processed successfully</reason>";
 
-            for ($i = 0; $i < count($result); $i++) {
+            while ($res = sqlFetchArray($result)) {
                 $xml_string .= "<DiagnosisCode>\n";
 
-                foreach ($result[$i] as $fieldName => $fieldValue) {
+                foreach ($res as $fieldName => $fieldValue) {
                     $rowValue = xmlsafestring($fieldValue);
                     $xml_string .= "<$fieldName>$rowValue</$fieldName>\n";
                 }

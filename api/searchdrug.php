@@ -20,7 +20,6 @@ if ($userId = validateToken($token)) {
     if ($acl_allow) {
         if (!empty($result)) {
 
-            newEvent($event = 'view-drug-list', $user, $groupname = 'Default', $success = '1', $comments = '');
             $xml_string .= "<status>0</status>\n";
             $xml_string .= "<reason>Success processing drugs list records</reason>\n";
 

@@ -1,6 +1,5 @@
 <?php
 
-
 header("Content-Type:text/xml");
 $ignoreAuth = true;
 require_once 'classes.php';
