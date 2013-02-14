@@ -1,5 +1,10 @@
 <?php
+
 /**
+ * api/addappointment.php Schedule new appointment.
+ *
+ * Api allows to schedule new appointment for a patient.
+ * 
  * Copyright (C) 2012 Karl Englund <karl@mastermobileproducts.com>
  *
  * LICENSE: This program is free software; you can redistribute it and/or

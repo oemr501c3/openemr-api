@@ -1,5 +1,9 @@
 <?php
 /**
+ * api/getsendmessage.php Get send messages.
+ *
+ * API is allowed to get send messages with details.
+ *
  * Copyright (C) 2012 Karl Englund <karl@mastermobileproducts.com>
  *
  * LICENSE: This program is free software; you can redistribute it and/or

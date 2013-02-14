@@ -1,5 +1,9 @@
 <?php
 /**
+ * api/getroscheckslist.php Get ROSChecks list.
+ *
+ * API is allowed to get patient review of systems checks list.
+ *
  * Copyright (C) 2012 Karl Englund <karl@mastermobileproducts.com>
  *
  * LICENSE: This program is free software; you can redistribute it and/or

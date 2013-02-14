@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * api/updatesoap.php Update SOAP.
+ *
+ * API is allowed to update patient Subjective, Objective, Assessment and Plan
+ * information.
+ * 
  * Copyright (C) 2012 Karl Englund <karl@mastermobileproducts.com>
  *
  * LICENSE: This program is free software; you can redistribute it and/or

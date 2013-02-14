@@ -1,5 +1,9 @@
 <?php
 /**
+ * api/getlist.php retrieve all patients.
+ *
+ * API fetch all patient problems e.g allergies, medication, medical problem etc.
+ * 
  * Copyright (C) 2012 Karl Englund <karl@mastermobileproducts.com>
  *
  * LICENSE: This program is free software; you can redistribute it and/or

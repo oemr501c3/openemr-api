@@ -1,6 +1,10 @@
 <?php
 
 /**
+ * api/searchappointments.new.php Search appointments.
+ *
+ * API is allowed to get list of appointments for search appointment .
+ *
  * Copyright (C) 2012 Karl Englund <karl@mastermobileproducts.com>
  *
  * LICENSE: This program is free software; you can redistribute it and/or

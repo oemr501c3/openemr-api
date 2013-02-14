@@ -1,5 +1,10 @@
 <?php
 /**
+ * api/getroschecksbyid.php Get ROSChecks by id.
+ *
+ * API is allowed to get patient review of systems checks by roschecks id and 
+ * patient id.
+ *
  * Copyright (C) 2012 Karl Englund <karl@mastermobileproducts.com>
  *
  * LICENSE: This program is free software; you can redistribute it and/or

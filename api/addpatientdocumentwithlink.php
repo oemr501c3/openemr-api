@@ -1,5 +1,9 @@
 <?php
 /**
+ * api/addpatientdocumentwithlink.php add new patient's document.
+ *
+ * Api add's patient document againt a particular category with file url.
+ * 
  * Copyright (C) 2012 Karl Englund <karl@mastermobileproducts.com>
  *
  * LICENSE: This program is free software; you can redistribute it and/or

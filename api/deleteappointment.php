@@ -1,5 +1,9 @@
 <?php
 /**
+ * api/deleteappointment.php Cancel appointment.
+ *
+ * Api allows to cancel appointment for a patient.
+ * 
  * Copyright (C) 2012 Karl Englund <karl@mastermobileproducts.com>
  *
  * LICENSE: This program is free software; you can redistribute it and/or

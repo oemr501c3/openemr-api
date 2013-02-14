@@ -1,5 +1,9 @@
 <?php
 /**
+ * api/report_visits.php Visits reports .
+ *
+ * API is allowed to get patient visit reports in html and pdf format.
+ *
  * Copyright (C) 2012 Karl Englund <karl@mastermobileproducts.com>
  *
  * LICENSE: This program is free software; you can redistribute it and/or
@@ -199,10 +203,9 @@ if ($userId = validateToken($token)) {
             $query .= "AND fe.date = (SELECT MIN(fe2.date) FROM form_encounter AS fe2 WHERE fe2.pid = fe.pid) ";
         }
 
-        $res = sqlStatement($query, array());
-        //$res = $db->get_results($query);
-//echo var_dump($res);echo $res;exit;
-        if ($res->_numOfRows > 0) {
+        $res = sqlStatement($query);
+        $numRows = sqlNumRows($res);
+        if ($numRows > 0) {
             $lastdocname = "";
             $doc_encounters = 0;
             while ($row = sqlFetchArray($res)) {

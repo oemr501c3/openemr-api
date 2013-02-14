@@ -1,5 +1,10 @@
 <?php
 /**
+ * api/visitsummery.php Get patient visit summary.
+ *
+ * API is allowed to get the patient most recent visit summary with complete 
+ * details.
+ * 
  * Copyright (C) 2012 Karl Englund <karl@mastermobileproducts.com>
  *
  * LICENSE: This program is free software; you can redistribute it and/or

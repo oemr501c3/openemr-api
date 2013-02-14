@@ -1,5 +1,9 @@
 <?php
 /**
+ * api/getresources.php Get resources.
+ *
+ * API is allowed to get resources.
+ *
  * Copyright (C) 2012 Karl Englund <karl@mastermobileproducts.com>
  *
  * LICENSE: This program is free software; you can redistribute it and/or

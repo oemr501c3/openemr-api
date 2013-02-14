@@ -1,5 +1,9 @@
 <?php
 /**
+ * api/updatenotificationbadge.php Update notification badge.
+ *
+ * API is allowed to update notification badge for push notifications.
+ * 
  * Copyright (C) 2012 Karl Englund <karl@mastermobileproducts.com>
  *
  * LICENSE: This program is free software; you can redistribute it and/or

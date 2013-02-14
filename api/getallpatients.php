@@ -1,5 +1,9 @@
 <?php
 /**
+ * api/getallpatients.php retrieve all patients.
+ *
+ * API returns all patients with the profile image url.
+ * 
  * Copyright (C) 2012 Karl Englund <karl@mastermobileproducts.com>
  *
  * LICENSE: This program is free software; you can redistribute it and/or
@@ -39,9 +43,9 @@ if ($userId = validateToken($token)) {
     if ($acl_allow) {
 
         $strQuery = "SELECT id, pid, fname as firstname, lname as lastname,mname as middlename, phone_contact as phone, dob, sex as gender FROM patient_data";
-        $result = sqlStatement($strQuery, array());
-
-        if ($result->_numOfRows > 0) {
+        $result = sqlStatement($strQuery);
+        $numRows = sqlNumRows($result);
+        if ($numRows > 0) {
             $xml_string .= "<status>0</status>";
             $xml_string .= "<reason>The Patient list Record has been fetched</reason>";
             $counter = 0;

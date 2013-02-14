@@ -1,5 +1,10 @@
+
 <?php
 /**
+ * api/addfeesheet.php Add fee sheet items.
+ *
+ * API is allowed to add fee sheet items (price and units) for billing.
+ * 
  * Copyright (C) 2012 Karl Englund <karl@mastermobileproducts.com>
  *
  * LICENSE: This program is free software; you can redistribute it and/or

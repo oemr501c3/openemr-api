@@ -1,6 +1,10 @@
 <?php
 
 /**
+ * api/updatelocation.php Update location.
+ *
+ * API is allowed to update location.
+ * 
  * Copyright (C) 2012 Karl Englund <karl@mastermobileproducts.com>
  *
  * LICENSE: This program is free software; you can redistribute it and/or

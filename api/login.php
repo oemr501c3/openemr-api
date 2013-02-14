@@ -1,5 +1,9 @@
 <?php
 /**
+ * api/login.php User login.
+ *
+ * API is allowed to login of with username and password.
+ * 
  * Copyright (C) 2012 Karl Englund <karl@mastermobileproducts.com>
  *
  * LICENSE: This program is free software; you can redistribute it and/or

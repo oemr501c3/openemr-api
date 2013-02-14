@@ -1,5 +1,9 @@
 <?php
 /**
+ * api/addsoap.php add patient's Subjective Objective Assessment and Plan.
+ *
+ * Api add's patient SOAP against particular visit.
+ *
  * Copyright (C) 2012 Karl Englund <karl@mastermobileproducts.com>
  *
  * LICENSE: This program is free software; you can redistribute it and/or

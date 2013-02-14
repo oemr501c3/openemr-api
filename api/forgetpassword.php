@@ -1,5 +1,9 @@
 <?php
 /**
+ * api/forgetpassword.php to Retrieve user password.
+ *
+ * API send an email to user which containing his username, password and pin.
+ * 
  * Copyright (C) 2012 Karl Englund <karl@mastermobileproducts.com>
  *
  * LICENSE: This program is free software; you can redistribute it and/or

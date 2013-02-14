@@ -1,5 +1,9 @@
 <?php
 /**
+ * api/addroschecks.php add patient's review of systems checks.
+ *
+ * Api add's patient review of systems checks against particular visit.
+ *
  * Copyright (C) 2012 Karl Englund <karl@mastermobileproducts.com>
  *
  * LICENSE: This program is free software; you can redistribute it and/or

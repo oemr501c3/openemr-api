@@ -1,5 +1,9 @@
 <?php
 /**
+ * api/searchappointments.php Search appointments.
+ *
+ * API is allowed to get list of appointments for search appointment.
+ * 
  * Copyright (C) 2012 Karl Englund <karl@mastermobileproducts.com>
  *
  * LICENSE: This program is free software; you can redistribute it and/or
@@ -32,7 +36,7 @@ if ($userId = validateToken($token)) {
     $user = getUsername($userId);
     $acl_allow = acl_check('admin', 'super', $user);
     if ($acl_allow) {
-        
+
         if (!empty($appointmentDate)) {
 
             $strQuery = "SELECT pd.id as pid,pd.fname, pd.lname, pd.sex as gender, ope.pc_apptstatus, ope.pc_eid, ope.pc_pid, ope.pc_title, ope.pc_hometext, ope.pc_eventDate, ope.pc_startTime, ope.pc_endTime 
@@ -63,8 +67,9 @@ if ($userId = validateToken($token)) {
             $strQuery = "SELECT pd.id as pid,pd.fname, pd.lname, pd.sex as gender, ope.pc_apptstatus, ope.pc_eid, ope.pc_pid, ope.pc_title, ope.pc_hometext, ope.pc_eventDate, ope.pc_startTime, ope.pc_endTime 
                     FROM openemr_postcalendar_events as ope, patient_data as pd 
                     WHERE pd.pid=ope.pc_pid";
-            $result = sqlStatement($strQuery, array());
-            if ($result->_numOfRows > 0) {
+            $result = sqlStatement($strQuery);
+            $numRows = sqlNumRows($result);
+            if ($numRows > 0) {
                 $xml_string .= "<status>0</status>\n";
                 $xml_string .= "<reason>Success processing patient appointments records</reason>\n";
                 $counter = 0;

@@ -1,5 +1,9 @@
 <?php
 /**
+ * api/addvisitvitals.php add patient's vitals.
+ *
+ * Api add's patient Vitals against particular visit.
+ *
  * Copyright (C) 2012 Karl Englund <karl@mastermobileproducts.com>
  *
  * LICENSE: This program is free software; you can redistribute it and/or

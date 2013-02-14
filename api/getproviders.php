@@ -1,5 +1,10 @@
 <?php
+
 /**
+ * api/getproviders.php Get providers.
+ *
+ * API is allowed to get list of providers.
+ *
  * Copyright (C) 2012 Karl Englund <karl@mastermobileproducts.com>
  *
  * LICENSE: This program is free software; you can redistribute it and/or
@@ -36,13 +41,14 @@ if ($userId = validateToken($token)) {
                                                             WHERE authorized =1
                                                             AND active =1";
 
-        $result = sqlStatement($strQuery, array());
-      if ($result->_numOfRows > 0) {
+        $result = sqlStatement($strQuery);
+        $numRows = sqlNumRows($result);
+        if ($numRows > 0) {
             $xml_string .= "<status>0</status>\n";
             $xml_string .= "<reason>The Appointment Categories Record has been fetched</reason>\n";
             $counter = 0;
 
-             while ($res = sqlFetchArray($result)) {
+            while ($res = sqlFetchArray($result)) {
                 $xml_string .= "<Provider>\n";
 
                 foreach ($res as $fieldname => $fieldvalue) {
@@ -67,5 +73,4 @@ if ($userId = validateToken($token)) {
 }
 $xml_string .= "</Providers>\n";
 echo $xml_string;
-
 ?>

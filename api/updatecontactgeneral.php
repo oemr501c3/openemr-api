@@ -1,5 +1,9 @@
 <?php
 /**
+ * api/updatecontactgeneral.php Update contact.
+ *
+ * API is allowed to update general contact details.
+ *  
  * Copyright (C) 2012 Karl Englund <karl@mastermobileproducts.com>
  *
  * LICENSE: This program is free software; you can redistribute it and/or

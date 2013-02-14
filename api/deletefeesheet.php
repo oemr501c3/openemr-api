@@ -1,5 +1,9 @@
 <?php
 /**
+ * api/deletefeesheet.php Delete fee sheet items.
+ *
+ * API is allowed to delete fee sheet items (price and units) for billing.
+ * 
  * Copyright (C) 2012 Karl Englund <karl@mastermobileproducts.com>
  *
  * LICENSE: This program is free software; you can redistribute it and/or

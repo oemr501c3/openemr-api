@@ -1,5 +1,9 @@
 <?php
 /**
+ * api/addfacility.php add new facility.
+ *
+ * Api add new facility 
+ * 
  * Copyright (C) 2012 Karl Englund <karl@mastermobileproducts.com>
  *
  * LICENSE: This program is free software; you can redistribute it and/or

@@ -1,5 +1,9 @@
 <?php
 /**
+ * api/searchrx.php Search Rx.
+ *
+ * API is allowed to search Rx.
+ * 
  * Copyright (C) 2012 Karl Englund <karl@mastermobileproducts.com>
  *
  * LICENSE: This program is free software; you can redistribute it and/or

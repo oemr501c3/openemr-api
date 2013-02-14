@@ -1,5 +1,9 @@
 <?php
 /**
+ * api/addpatientdocument.php add new patient's document.
+ *
+ * Api add's patient document againt a particular category as in openemr
+ * 
  * Copyright (C) 2012 Karl Englund <karl@mastermobileproducts.com>
  *
  * LICENSE: This program is free software; you can redistribute it and/or

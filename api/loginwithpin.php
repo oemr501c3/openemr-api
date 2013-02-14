@@ -1,5 +1,9 @@
 <?php
 /**
+ * api/loginwithpin.php login with pin.
+ *
+ * API is allowed to login with pin already logged user.
+ *
  * Copyright (C) 2012 Karl Englund <karl@mastermobileproducts.com>
  *
  * LICENSE: This program is free software; you can redistribute it and/or

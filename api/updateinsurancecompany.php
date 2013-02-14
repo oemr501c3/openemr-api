@@ -1,5 +1,9 @@
 <?php
 /**
+ * api/updateinsurancecompany.php Update insurance company .
+ *
+ * API is allowed to update insurance company details.
+ *  
  * Copyright (C) 2012 Karl Englund <karl@mastermobileproducts.com>
  *
  * LICENSE: This program is free software; you can redistribute it and/or

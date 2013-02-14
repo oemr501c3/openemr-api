@@ -1,5 +1,10 @@
 <?php
 /**
+ * api/addcheckout.php Add patient checkout.
+ *
+ * API is allowed to add patient billed ammount, discount and payment 
+ * method(cash, check).
+ * 
  * Copyright (C) 2012 Karl Englund <karl@mastermobileproducts.com>
  *
  * LICENSE: This program is free software; you can redistribute it and/or

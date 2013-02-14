@@ -1,5 +1,9 @@
 <?php
 /**
+ * api/getpatientdpcuments.php fetch patient documents.
+ *
+ * API fetch and retuen all patient documents of any type.
+ * 
  * Copyright (C) 2012 Karl Englund <karl@mastermobileproducts.com>
  *
  * LICENSE: This program is free software; you can redistribute it and/or

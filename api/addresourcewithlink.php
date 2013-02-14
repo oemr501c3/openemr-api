@@ -1,5 +1,10 @@
 <?php
 /**
+ * api/addresourcewithlink.php add new user's resources.
+ *
+ * Api add's users resources with url of the file 
+ * such as images, url, videos, pdf.
+ *
  * Copyright (C) 2012 Karl Englund <karl@mastermobileproducts.com>
  *
  * LICENSE: This program is free software; you can redistribute it and/or

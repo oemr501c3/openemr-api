@@ -1,5 +1,9 @@
 <?php
 /**
+ * api/classes.php contain files to be included
+ * 
+ * this file contain all files and information to be included.
+ * 
  * Copyright (C) 2012 Karl Englund <karl@mastermobileproducts.com>
  *
  * LICENSE: This program is free software; you can redistribute it and/or
@@ -22,13 +26,13 @@ $sanitize_all_escapes=true;
 
 include_once(dirname(dirname(__FILE__)) . "/interface/globals.php");
 
-//if(!$GLOBALS['rest_api_server']){
-//    echo "<openemr>
-//            <status>-1</status>
-//            <reason>Please check the REST API server settings in Administration/Globals/Connectors</reason>
-//        </openemr>";
-//    exit;
-//}
+if(!$GLOBALS['rest_api_server']){
+    echo "<openemr>
+            <status>-1</status>
+            <reason>Please check the REST API server settings in Administration/Globals/Connectors</reason>
+        </openemr>";
+    exit;
+}
 
 
 require_once("$srcdir/pid.inc");

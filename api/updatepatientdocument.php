@@ -1,5 +1,10 @@
 <?php
 /**
+ * api/updatepatientdocument.php Update patient documents.
+ *
+ * API is allowed to update patient documents like Lab Report,
+ * Patient Photograph, and Medical Record.  
+ * 
  * Copyright (C) 2012 Karl Englund <karl@mastermobileproducts.com>
  *
  * LICENSE: This program is free software; you can redistribute it and/or

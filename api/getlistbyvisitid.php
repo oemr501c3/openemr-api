@@ -1,5 +1,9 @@
 <?php
 /**
+ * api/getlistbyvisitid.php retrieve all list element by visit id.
+ *
+ * API returns all list items related to any particular visit id.
+ * 
  * Copyright (C) 2012 Karl Englund <karl@mastermobileproducts.com>
  *
  * LICENSE: This program is free software; you can redistribute it and/or

@@ -1,5 +1,9 @@
 <?php
 /**
+ * api/deleteresource.php delete user resources.
+ *
+ * API is allowed to delete resources for user.
+ * 
  * Copyright (C) 2012 Karl Englund <karl@mastermobileproducts.com>
  *
  * LICENSE: This program is free software; you can redistribute it and/or

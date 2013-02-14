@@ -1,5 +1,9 @@
 <?php
 /**
+ * api/vitals.php List of patient vitals.
+ *
+ * API is allowed to get patient vitals list with details.
+ *
  * Copyright (C) 2012 Karl Englund <karl@mastermobileproducts.com>
  *
  * LICENSE: This program is free software; you can redistribute it and/or

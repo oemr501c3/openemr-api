@@ -1,5 +1,9 @@
 <?php
 /**
+ * api/getfacility.php retrieve all facilities.
+ *
+ * API fetch all facilities.
+ * 
  * Copyright (C) 2012 Karl Englund <karl@mastermobileproducts.com>
  *
  * LICENSE: This program is free software; you can redistribute it and/or
@@ -34,9 +38,9 @@ if ($userId = validateToken($token)) {
     $acl_allow = acl_check('admin', 'super', $user);
     if ($acl_allow) {
         $strQuery = "SELECT id, name FROM facility";
-        $result = sqlStatement($strQuery,array());
-        
-        if ($result->_numOfRows > 0) {
+        $result = sqlStatement($strQuery);
+        $numRows = sqlNumRows($result);
+        if ($numRows > 0) {
             $xml_string .= "<status>0</status>";
             $xml_string .= "<reason>The Facilities Record has been fetched</reason>";
  

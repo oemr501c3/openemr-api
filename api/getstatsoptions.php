@@ -1,5 +1,9 @@
 <?php
 /**
+ * api/getstatsoptions.php Get stats options.
+ *
+ * API is allowed to get stats option(language, race and ethnicity).
+ *
  * Copyright (C) 2012 Karl Englund <karl@mastermobileproducts.com>
  *
  * LICENSE: This program is free software; you can redistribute it and/or
@@ -32,18 +36,18 @@ if ($userId = validateToken($token)) {
     if ($acl_allow) {
 
         $strQuery = "SELECT option_id, title FROM list_options WHERE list_id  = 'language'";
-
-        $result = sqlStatement($strQuery, array());
-
-        $strQuery1 = "SELECT option_id, title FROM list_options WHERE list_id  = 'race'";
-
-        $result1 = sqlStatement($strQuery1, array());
-
-        $strQuery2 = "SELECT option_id, title FROM list_options WHERE list_id  = 'ethnicity'";
-
-        $result2 = sqlStatement($strQuery2, array());
+        $result = sqlStatement($strQuery);
+        $numRows = sqlNumRows($result);
         
-        if ($result->_numOfRows > 0 || $result1->_numOfRows > 0 || $result2->_numOfRows > 0) {
+        $strQuery1 = "SELECT option_id, title FROM list_options WHERE list_id  = 'race'";
+        $result1 = sqlStatement($strQuery1);
+        $numRows1 = sqlNumRows($result1);
+        
+        $strQuery2 = "SELECT option_id, title FROM list_options WHERE list_id  = 'ethnicity'";
+        $result2 = sqlStatement($strQuery2);
+        $numRows2 = sqlNumRows($result2);
+        
+        if ($numRows > 0 || $numRows1 > 0 || $numRows2 > 0) {
             
             $xml_string .= "<status>0</status>";
             $xml_string .= "<reason>The Options has been fetched</reason>";

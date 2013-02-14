@@ -1,5 +1,9 @@
 <?php
 /**
+ * api/report_appt_visits.php Appointment and visit report.
+ *
+ * API is allowed to get patient appointment and visit report.
+ *
  * Copyright (C) 2012 Karl Englund <karl@mastermobileproducts.com>
  *
  * LICENSE: This program is free software; you can redistribute it and/or
@@ -238,11 +242,11 @@ if ($userId = validateToken($token)) {
             $query .= "AND fe.facility_id = '$facility' ";
         }
         $query .= ") ORDER BY docname, pc_eventDate, pc_startTime";
-        $res = sqlStatement($query, array());
+        $res = sqlStatement($query);
 
 
-
-        if ($res->_numOfRows > 0) {
+        $numRows = sqlNumRows($res);
+        if ($numRows > 0) {
             $docrow = array('docname' => '', 'charges' => 0, 'copays' => 0, 'encounters' => 0);
 
             while ($row = sqlFetchArray($res)) {

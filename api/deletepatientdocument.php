@@ -1,5 +1,10 @@
 <?php
 /**
+ * api/deletepatientdocument.php delete patient document.
+ *
+ * API is allowed to delete patient documents. documents can be
+ * labreports, id card pic etc.
+ * 
  * Copyright (C) 2012 Karl Englund <karl@mastermobileproducts.com>
  *
  * LICENSE: This program is free software; you can redistribute it and/or

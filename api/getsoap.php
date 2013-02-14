@@ -1,5 +1,9 @@
 <?php
 /**
+ * api/getsoap.php Get SOAP.
+ *
+ * API is allowed to get patient SOAP (Subjective, Objective, Assessment and Plan) 
+ * details.
  * Copyright (C) 2012 Karl Englund <karl@mastermobileproducts.com>
  *
  * LICENSE: This program is free software; you can redistribute it and/or

@@ -1,5 +1,9 @@
 <?php
 /**
+ * api/addonotes.php add notes.
+ *
+ * Api add onotes
+ * 
  * Copyright (C) 2012 Karl Englund <karl@mastermobileproducts.com>
  *
  * LICENSE: This program is free software; you can redistribute it and/or
@@ -17,6 +21,7 @@
  * @author  Karl Englund <karl@mastermobileproducts.com>
  * @link    http://www.open-emr.org
  */
+
 header("Content-Type:text/xml");
 $ignoreAuth = true;
 require_once 'classes.php';

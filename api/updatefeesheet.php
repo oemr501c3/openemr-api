@@ -1,5 +1,9 @@
 <?php
 /**
+ * api/updatefeesheet.php Update fee sheet.
+ *
+ * API is allowed to update feehsheet items details for billing. 
+ * 
  * Copyright (C) 2012 Karl Englund <karl@mastermobileproducts.com>
  *
  * LICENSE: This program is free software; you can redistribute it and/or

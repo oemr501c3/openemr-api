@@ -1,5 +1,9 @@
 <?php
 /**
+ * api/getappointmentcategories.php to retrieve appointment categories.
+ *
+ * API retrieve all appointment categories.
+ * 
  * Copyright (C) 2012 Karl Englund <karl@mastermobileproducts.com>
  *
  * LICENSE: This program is free software; you can redistribute it and/or
